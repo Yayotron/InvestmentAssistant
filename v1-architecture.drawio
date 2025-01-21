@@ -1,0 +1,195 @@
+<mxfile host="Electron" modified="2025-01-21T14:40:59.741Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/22.1.11 Chrome/114.0.5735.289 Electron/25.9.8 Safari/537.36" etag="_xrcoRBOwaY5Mnm6IHYn" version="22.1.11" type="device" pages="3">
+  <diagram name="v1" id="8OtH7xpoOeajr92iCrvQ">
+    <mxGraphModel dx="1434" dy="836" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1200" pageHeight="1600" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="opJD9HLW1Uyg5Fvw-MjP-20" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;labelBackgroundColor=none;endArrow=open;fontSize=19;fontFamily=Ubuntu;strokeColor=#808080;startArrow=none;startFill=0;endFill=0;strokeWidth=3;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DUbuntu;sketch=1;curveFitting=1;jiggle=2;shadow=0;labelBorderColor=none;textOpacity=90;fontStyle=1;" parent="1" source="opJD9HLW1Uyg5Fvw-MjP-1" target="opJD9HLW1Uyg5Fvw-MjP-19" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="opJD9HLW1Uyg5Fvw-MjP-1" value="&lt;div&gt;I am a software engineer.&lt;/div&gt;&lt;div&gt;I earn 10 000 PLN a month&lt;/div&gt;&lt;div&gt;I have a spare 1000 PLN per month&lt;/div&gt;&lt;div&gt;I am interested in buying a new house in Poland&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;My goal is to do it in 3 years time.&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#12ABDB;strokeColor=#0070AD;fontFamily=Ubuntu;strokeWidth=3;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DUbuntu;labelBorderColor=none;textOpacity=90;fontStyle=1;gradientColor=none;fillStyle=auto;labelBackgroundColor=none;opacity=40;" parent="1" vertex="1">
+          <mxGeometry x="56" y="162" width="280" height="170" as="geometry" />
+        </mxCell>
+        <mxCell id="opJD9HLW1Uyg5Fvw-MjP-10" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;labelBackgroundColor=none;endArrow=open;fontSize=19;fontFamily=Ubuntu;strokeColor=#808080;startArrow=none;startFill=0;endFill=0;strokeWidth=3;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DUbuntu;sketch=1;curveFitting=1;jiggle=2;shadow=0;labelBorderColor=none;textOpacity=90;fontStyle=1;" parent="1" source="opJD9HLW1Uyg5Fvw-MjP-4" target="opJD9HLW1Uyg5Fvw-MjP-6" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="525" y="613" />
+              <mxPoint x="525" y="611" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="opJD9HLW1Uyg5Fvw-MjP-12" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;labelBackgroundColor=none;endArrow=open;fontSize=19;fontFamily=Ubuntu;strokeColor=#808080;startArrow=none;startFill=0;endFill=0;strokeWidth=3;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DUbuntu;sketch=1;curveFitting=1;jiggle=2;shadow=0;labelBorderColor=none;textOpacity=90;fontStyle=1;" parent="1" source="opJD9HLW1Uyg5Fvw-MjP-4" target="5ZaZs-pvYe-qKwX8dHFW-2" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="867" y="619.5" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="opJD9HLW1Uyg5Fvw-MjP-4" value="feeder" style="whiteSpace=wrap;html=1;rounded=0;fillColor=#d5e8d4;strokeColor=#82b366;fontFamily=Ubuntu;strokeWidth=3;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DUbuntu;labelBorderColor=none;textOpacity=90;fontStyle=1;fillStyle=auto;labelBackgroundColor=none;opacity=40;" parent="1" vertex="1">
+          <mxGeometry x="593" y="577" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="opJD9HLW1Uyg5Fvw-MjP-6" value="" style="sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;fillColor=#C925D1;strokeColor=none;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;pointerEvents=1;shape=mxgraph.aws4.rds_postgresql_instance;" parent="1" vertex="1">
+          <mxGeometry x="379" y="572" width="78" height="78" as="geometry" />
+        </mxCell>
+        <mxCell id="opJD9HLW1Uyg5Fvw-MjP-7" value="Knowledge Storage" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontFamily=Ubuntu;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DUbuntu;fontStyle=1;" parent="1" vertex="1">
+          <mxGeometry x="353" y="642" width="130" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="opJD9HLW1Uyg5Fvw-MjP-13" value="retrieves 6 month market data from local storage" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontFamily=Ubuntu;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DUbuntu;fontStyle=1;" parent="1" vertex="1">
+          <mxGeometry x="805" y="662" width="276" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="opJD9HLW1Uyg5Fvw-MjP-14" value="stores in sql table" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontFamily=Ubuntu;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DUbuntu;fontStyle=1;" parent="1" vertex="1">
+          <mxGeometry x="457" y="572" width="111" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="opJD9HLW1Uyg5Fvw-MjP-18" value="User Query (hardcoded)" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontFamily=Ubuntu;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DUbuntu;fontStyle=1;" parent="1" vertex="1">
+          <mxGeometry x="110" y="136" width="147" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="SjYf4q5xqTKtXkVGE02z-1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;labelBackgroundColor=none;endArrow=open;fontSize=19;fontFamily=Ubuntu;strokeColor=#808080;startArrow=none;startFill=0;endFill=0;strokeWidth=3;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DUbuntu;sketch=1;curveFitting=1;jiggle=2;shadow=0;labelBorderColor=none;textOpacity=90;fontStyle=1;" parent="1" source="opJD9HLW1Uyg5Fvw-MjP-19" target="opJD9HLW1Uyg5Fvw-MjP-6" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="556" y="425" />
+              <mxPoint x="412" y="425" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="SjYf4q5xqTKtXkVGE02z-8" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;startArrow=none;startFill=0;labelBackgroundColor=none;endArrow=open;fontSize=19;fontFamily=Ubuntu;strokeColor=#808080;endFill=0;strokeWidth=3;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DUbuntu;sketch=1;curveFitting=1;jiggle=2;shadow=0;labelBorderColor=none;textOpacity=90;fontStyle=1;" parent="1" source="opJD9HLW1Uyg5Fvw-MjP-19" target="SjYf4q5xqTKtXkVGE02z-3" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="opJD9HLW1Uyg5Fvw-MjP-19" value="presenter" style="whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;rounded=0;fontFamily=Ubuntu;strokeWidth=3;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DUbuntu;labelBorderColor=none;textOpacity=90;fontStyle=1;fillStyle=auto;labelBackgroundColor=none;opacity=40;" parent="1" vertex="1">
+          <mxGeometry x="496" y="217" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="SjYf4q5xqTKtXkVGE02z-2" value="retrieves market data&lt;br&gt;drafts suggested investment&lt;br&gt;strategy" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontFamily=Ubuntu;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DUbuntu;fontStyle=1;" parent="1" vertex="1">
+          <mxGeometry x="379" y="373" width="168" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="SjYf4q5xqTKtXkVGE02z-5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="SjYf4q5xqTKtXkVGE02z-3" target="SjYf4q5xqTKtXkVGE02z-4" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="SjYf4q5xqTKtXkVGE02z-3" value="evaluator" style="whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;rounded=0;fontFamily=Ubuntu;strokeWidth=3;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DUbuntu;labelBorderColor=none;textOpacity=90;fontStyle=1;fillStyle=auto;labelBackgroundColor=none;opacity=40;" parent="1" vertex="1">
+          <mxGeometry x="803" y="217" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="SjYf4q5xqTKtXkVGE02z-4" value="" style="sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;fillColor=#C925D1;strokeColor=none;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;pointerEvents=1;shape=mxgraph.aws4.rds_postgresql_instance;" parent="1" vertex="1">
+          <mxGeometry x="824" y="40" width="78" height="78" as="geometry" />
+        </mxCell>
+        <mxCell id="SjYf4q5xqTKtXkVGE02z-6" value="stores result of conversation&lt;br&gt;with presenter&lt;br&gt;metadata of user&#39;s query" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontFamily=Ubuntu;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DUbuntu;fontStyle=1;" parent="1" vertex="1">
+          <mxGeometry x="865" y="140" width="168" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="SjYf4q5xqTKtXkVGE02z-7" value="async" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontFamily=Ubuntu;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DUbuntu;fontStyle=1;" parent="1" vertex="1">
+          <mxGeometry x="756" y="581" width="49" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="SjYf4q5xqTKtXkVGE02z-9" value="{n} hops conversation" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontFamily=Ubuntu;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DUbuntu;fontStyle=1;" parent="1" vertex="1">
+          <mxGeometry x="643" y="221" width="133" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="5ZaZs-pvYe-qKwX8dHFW-2" value="" style="image;aspect=fixed;html=1;points=[];align=center;fontSize=12;image=img/lib/azure2/general/Folder_Blank.svg;" vertex="1" parent="1">
+          <mxGeometry x="893" y="594" width="69" height="56.00000000000001" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="ePuNAX5Y0OI9vk2s83E_" name="presenter">
+    <mxGraphModel dx="1434" dy="836" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1200" pageHeight="1600" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="kUthfTeHmSAMfIdSlc27-2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;labelBackgroundColor=none;endArrow=open;fontSize=19;fontFamily=Ubuntu;strokeColor=#808080;startArrow=none;startFill=0;endFill=0;strokeWidth=3;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DUbuntu;sketch=1;curveFitting=1;jiggle=2;shadow=0;labelBorderColor=none;textOpacity=90;fontStyle=1;" parent="1" source="UwOhgO-d5PZDNcppUJ_M-5" target="kUthfTeHmSAMfIdSlc27-1" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="UwOhgO-d5PZDNcppUJ_M-5" value="searches&lt;br&gt;the web for missing&lt;br&gt;data" style="whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;rounded=0;fontFamily=Ubuntu;strokeWidth=3;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DUbuntu;labelBorderColor=none;textOpacity=90;fontStyle=1;fillStyle=auto;labelBackgroundColor=none;opacity=40;" parent="1" vertex="1">
+          <mxGeometry x="550" y="600" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="UwOhgO-d5PZDNcppUJ_M-3" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;labelBackgroundColor=none;endArrow=open;fontSize=19;fontFamily=Ubuntu;strokeColor=#808080;startArrow=none;startFill=0;endFill=0;strokeWidth=3;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DUbuntu;sketch=1;curveFitting=1;jiggle=2;shadow=0;labelBorderColor=none;textOpacity=90;fontStyle=1;" parent="1" source="UwOhgO-d5PZDNcppUJ_M-1" target="UwOhgO-d5PZDNcppUJ_M-2" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="UwOhgO-d5PZDNcppUJ_M-1" value="&lt;div&gt;I am a software engineer.&lt;/div&gt;&lt;div&gt;I earn 10 000 PLN a month&lt;/div&gt;&lt;div&gt;I have a spare 1000 per month&lt;/div&gt;&lt;div&gt;I am interested in buying a new house in Poland&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;My goal is to do it in 1 year time.&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#12ABDB;strokeColor=#0070AD;fontFamily=Ubuntu;strokeWidth=3;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DUbuntu;labelBorderColor=none;textOpacity=90;fontStyle=1;gradientColor=none;fillStyle=auto;labelBackgroundColor=none;opacity=40;" parent="1" vertex="1">
+          <mxGeometry x="56" y="162" width="280" height="170" as="geometry" />
+        </mxCell>
+        <mxCell id="kUthfTeHmSAMfIdSlc27-6" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;labelBackgroundColor=none;endArrow=open;fontSize=19;fontFamily=Ubuntu;strokeColor=#808080;startArrow=none;startFill=0;endFill=0;strokeWidth=3;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DUbuntu;sketch=1;curveFitting=1;jiggle=2;shadow=0;labelBorderColor=none;textOpacity=90;fontStyle=1;" parent="1" source="UwOhgO-d5PZDNcppUJ_M-2" target="kUthfTeHmSAMfIdSlc27-5" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="kUthfTeHmSAMfIdSlc27-12" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;labelBackgroundColor=none;endArrow=open;fontSize=19;fontFamily=Ubuntu;strokeColor=#808080;startArrow=none;startFill=0;endFill=0;strokeWidth=3;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DUbuntu;sketch=1;curveFitting=1;jiggle=2;shadow=0;labelBorderColor=none;textOpacity=90;fontStyle=1;" parent="1" source="UwOhgO-d5PZDNcppUJ_M-2" target="kUthfTeHmSAMfIdSlc27-11" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="UwOhgO-d5PZDNcppUJ_M-2" value="Understands missing&lt;br&gt;data" style="whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;rounded=0;fontFamily=Ubuntu;strokeWidth=3;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DUbuntu;labelBorderColor=none;textOpacity=90;fontStyle=1;fillStyle=auto;labelBackgroundColor=none;opacity=40;" parent="1" vertex="1">
+          <mxGeometry x="496" y="217" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="UwOhgO-d5PZDNcppUJ_M-4" value="" style="html=1;verticalLabelPosition=bottom;align=center;labelBackgroundColor=#ffffff;verticalAlign=top;strokeWidth=2;strokeColor=#0080F0;shadow=0;dashed=0;shape=mxgraph.ios7.icons.looking_glass;" parent="1" vertex="1">
+          <mxGeometry x="540" y="590" width="30" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="kUthfTeHmSAMfIdSlc27-1" value="" style="outlineConnect=0;fontColor=#232F3E;gradientColor=none;fillColor=#C925D1;strokeColor=none;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;pointerEvents=1;shape=mxgraph.aws4.rds_postgresql_instance;strokeWidth=1;" parent="1" vertex="1">
+          <mxGeometry x="749" y="591" width="78" height="78" as="geometry" />
+        </mxCell>
+        <mxCell id="kUthfTeHmSAMfIdSlc27-3" value="embedding" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontFamily=Ubuntu;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DUbuntu;fontStyle=1" parent="1" vertex="1">
+          <mxGeometry x="664" y="598" width="90" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="kUthfTeHmSAMfIdSlc27-5" value="To buy a house in Poland with a spare budget of 1000 monthly will require ~90 months to gather the upfront payment&lt;br&gt;The user can find new incoming opportunities&lt;br&gt;The user can invest in low-risk markets such as gold and increase his spare money by X%&lt;br&gt;The user can invest in medium-risk markets such as bitcoin and increase his spare money by Y%&lt;br&gt;&lt;br&gt;If the user finds a part time job earning ~5000 a month&lt;br&gt;with a spare of ~4000 a month invested in&lt;br&gt;gold it will take Z time to gather the upfront payment&lt;br&gt;invested in bitcoin it will take Z2 time." style="whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;rounded=0;fontFamily=Ubuntu;strokeWidth=3;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DUbuntu;labelBorderColor=none;textOpacity=90;fontStyle=1;fillStyle=auto;labelBackgroundColor=none;opacity=40;" parent="1" vertex="1">
+          <mxGeometry x="800" y="190" width="320" height="193" as="geometry" />
+        </mxCell>
+        <mxCell id="kUthfTeHmSAMfIdSlc27-7" value="aggregates" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontFamily=Ubuntu;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DUbuntu;fontStyle=1" parent="1" vertex="1">
+          <mxGeometry x="665" y="217" width="90" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="kUthfTeHmSAMfIdSlc27-13" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;labelBackgroundColor=none;endArrow=open;fontSize=19;fontFamily=Ubuntu;strokeColor=#808080;startArrow=none;startFill=0;endFill=0;strokeWidth=3;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DUbuntu;sketch=1;curveFitting=1;jiggle=2;shadow=0;labelBorderColor=none;textOpacity=90;fontStyle=1;" parent="1" source="kUthfTeHmSAMfIdSlc27-11" target="UwOhgO-d5PZDNcppUJ_M-5" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="536" y="550" as="sourcePoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="kUthfTeHmSAMfIdSlc27-11" value="how&#39;s software engineering market in poland?&lt;br&gt;what&#39;s inflation rate in poland for the last year?&lt;br&gt;what&#39;s housing market price in Poland? how much will be required?&lt;br&gt;what are the financing options (up-front payment, interest rates, etc)" style="whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;rounded=0;fontFamily=Ubuntu;strokeWidth=3;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DUbuntu;labelBorderColor=none;textOpacity=90;fontStyle=1;fillStyle=auto;labelBackgroundColor=none;opacity=40;" parent="1" vertex="1">
+          <mxGeometry x="386" y="360" width="340" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="XXv064rAGkY9HRXjkjVx-1" value="WebSearchContentRetriever" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontFamily=Ubuntu;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DUbuntu;fontStyle=1" parent="1" vertex="1">
+          <mxGeometry x="360" y="615" width="180" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="XXv064rAGkY9HRXjkjVx-2" value="WebSearchTemplateGenerator" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontFamily=Ubuntu;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DUbuntu;fontStyle=1" parent="1" vertex="1">
+          <mxGeometry x="191" y="415" width="200" height="30" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram name="evaluator" id="E4pENnCfp_qo73jX4J-V">
+    <mxGraphModel dx="1434" dy="836" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1200" pageHeight="1600" math="0" shadow="0">
+      <root>
+        <mxCell id="_2vlj9iUzZ57ToMc_5MV-0" />
+        <mxCell id="_2vlj9iUzZ57ToMc_5MV-1" parent="_2vlj9iUzZ57ToMc_5MV-0" />
+        <mxCell id="O-3-d00P4sGNqEpDbaWA-1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;labelBackgroundColor=none;endArrow=open;fontSize=19;fontFamily=Ubuntu;strokeColor=#808080;startArrow=none;startFill=0;endFill=0;strokeWidth=3;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DUbuntu;sketch=1;curveFitting=1;jiggle=2;shadow=0;labelBorderColor=none;textOpacity=90;fontStyle=1;" parent="_2vlj9iUzZ57ToMc_5MV-1" source="_2vlj9iUzZ57ToMc_5MV-12" target="O-3-d00P4sGNqEpDbaWA-0" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="_2vlj9iUzZ57ToMc_5MV-12" value="To buy a house in Poland with a spare budget of 1000 monthly will require ~90 months to gather the upfront payment&lt;br&gt;The user can find new incoming opportunities&lt;br&gt;The user can invest in low-risk markets such as gold and increase his spare money by X%&lt;br&gt;The user can invest in medium-risk markets such as bitcoin and increase his spare money by Y%&lt;br&gt;&lt;br&gt;If the user finds a part time job earning ~5000 a month&lt;br&gt;with a spare of ~4000 a month invested in&lt;br&gt;gold it will take Z time to gather the upfront payment&lt;br&gt;invested in bitcoin it will take Z2 time." style="whiteSpace=wrap;html=1;fillColor=#12ABDB;strokeColor=#0070AD;rounded=0;fontFamily=Ubuntu;strokeWidth=3;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DUbuntu;labelBorderColor=none;textOpacity=90;fontStyle=1;gradientColor=none;fillStyle=auto;labelBackgroundColor=none;opacity=40;" parent="_2vlj9iUzZ57ToMc_5MV-1" vertex="1">
+          <mxGeometry x="170" y="210" width="320" height="193" as="geometry" />
+        </mxCell>
+        <mxCell id="O-3-d00P4sGNqEpDbaWA-3" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;labelBackgroundColor=none;endArrow=open;fontSize=19;fontFamily=Ubuntu;strokeColor=#808080;startArrow=none;startFill=0;endFill=0;strokeWidth=3;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DUbuntu;sketch=1;curveFitting=1;jiggle=2;shadow=0;labelBorderColor=none;textOpacity=90;fontStyle=1;" parent="_2vlj9iUzZ57ToMc_5MV-1" source="O-3-d00P4sGNqEpDbaWA-0" target="O-3-d00P4sGNqEpDbaWA-2" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="2EEZFcnMHmfTUfe61gny-3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;labelBackgroundColor=none;endArrow=open;fontSize=19;fontFamily=Ubuntu;strokeColor=#808080;startArrow=none;startFill=0;endFill=0;strokeWidth=3;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DUbuntu;sketch=1;curveFitting=1;jiggle=2;shadow=0;labelBorderColor=none;textOpacity=90;fontStyle=1;" parent="_2vlj9iUzZ57ToMc_5MV-1" source="O-3-d00P4sGNqEpDbaWA-0" target="2EEZFcnMHmfTUfe61gny-0" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="O-3-d00P4sGNqEpDbaWA-0" value="What do you think about this investment strategy?&lt;br&gt;Can you think of some alternatives for investing or increasing income?&lt;br&gt;Can you think of a way for increasing spare money?" style="whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;rounded=0;fontFamily=Ubuntu;strokeWidth=3;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DUbuntu;labelBorderColor=none;textOpacity=90;fontStyle=1;fillStyle=auto;labelBackgroundColor=none;opacity=40;" parent="_2vlj9iUzZ57ToMc_5MV-1" vertex="1">
+          <mxGeometry x="670" y="246.38" width="240" height="120.25" as="geometry" />
+        </mxCell>
+        <mxCell id="2EEZFcnMHmfTUfe61gny-1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;labelBackgroundColor=none;endArrow=open;fontSize=19;fontFamily=Ubuntu;strokeColor=#808080;startArrow=none;startFill=0;endFill=0;strokeWidth=3;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DUbuntu;sketch=1;curveFitting=1;jiggle=2;shadow=0;labelBorderColor=none;textOpacity=90;fontStyle=1;" parent="_2vlj9iUzZ57ToMc_5MV-1" source="O-3-d00P4sGNqEpDbaWA-2" target="2EEZFcnMHmfTUfe61gny-0" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="970.0000000000005" y="550" as="sourcePoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="2EEZFcnMHmfTUfe61gny-6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;labelBackgroundColor=none;endArrow=open;fontSize=19;fontFamily=Ubuntu;strokeColor=#808080;startArrow=none;startFill=0;endFill=0;strokeWidth=3;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DUbuntu;sketch=1;curveFitting=1;jiggle=2;shadow=0;labelBorderColor=none;textOpacity=90;fontStyle=1;" parent="_2vlj9iUzZ57ToMc_5MV-1" source="O-3-d00P4sGNqEpDbaWA-2" target="2EEZFcnMHmfTUfe61gny-5" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="O-3-d00P4sGNqEpDbaWA-2" value="{suggestions for the strategy}" style="whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;rounded=0;fontFamily=Ubuntu;strokeWidth=3;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DUbuntu;labelBorderColor=none;textOpacity=90;fontStyle=1;fillStyle=auto;labelBackgroundColor=none;opacity=40;" parent="_2vlj9iUzZ57ToMc_5MV-1" vertex="1">
+          <mxGeometry x="665" y="500" width="250" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="swi9yJQihbjKzAyMjRvm-1" value="updates initial query {1 time}" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontFamily=Ubuntu;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DUbuntu;fontStyle=1;" parent="_2vlj9iUzZ57ToMc_5MV-1" vertex="1">
+          <mxGeometry x="330" y="470" width="170" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="2EEZFcnMHmfTUfe61gny-0" value="" style="sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;fillColor=#C925D1;strokeColor=none;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;pointerEvents=1;shape=mxgraph.aws4.rds_postgresql_instance;" parent="_2vlj9iUzZ57ToMc_5MV-1" vertex="1">
+          <mxGeometry x="1065" y="511" width="78" height="78" as="geometry" />
+        </mxCell>
+        <mxCell id="2EEZFcnMHmfTUfe61gny-2" value="creates embeddings" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontFamily=Ubuntu;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DUbuntu;fontStyle=1;" parent="_2vlj9iUzZ57ToMc_5MV-1" vertex="1">
+          <mxGeometry x="915" y="520" width="130" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="2EEZFcnMHmfTUfe61gny-4" value="uses previous embeddings" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontFamily=Ubuntu;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DUbuntu;fontStyle=1;" parent="_2vlj9iUzZ57ToMc_5MV-1" vertex="1">
+          <mxGeometry x="920" y="270" width="170" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="2EEZFcnMHmfTUfe61gny-7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;labelBackgroundColor=none;endArrow=open;fontSize=19;fontFamily=Ubuntu;strokeColor=#808080;startArrow=none;startFill=0;endFill=0;strokeWidth=3;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DUbuntu;sketch=1;curveFitting=1;jiggle=2;shadow=0;labelBorderColor=none;textOpacity=90;fontStyle=1;" parent="_2vlj9iUzZ57ToMc_5MV-1" source="2EEZFcnMHmfTUfe61gny-5" target="_2vlj9iUzZ57ToMc_5MV-12" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="2EEZFcnMHmfTUfe61gny-5" value="presenter -&amp;gt; injects content" style="whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;rounded=0;fontFamily=Ubuntu;strokeWidth=3;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DUbuntu;labelBorderColor=none;textOpacity=90;fontStyle=1;fillStyle=auto;labelBackgroundColor=none;opacity=40;" parent="_2vlj9iUzZ57ToMc_5MV-1" vertex="1">
+          <mxGeometry x="235" y="560" width="190" height="50" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
