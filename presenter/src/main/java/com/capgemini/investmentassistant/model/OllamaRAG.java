@@ -16,24 +16,12 @@ import java.util.stream.Collectors;
 public class OllamaRAG {
 
     private static final Logger logger = LoggerFactory.getLogger(OllamaRAG.class);
-
-    private final OllamaChatModel ollamaChatModel;
-    private final List<SystemPromptEnricher> systemPrompts;
-    private final RetrievalAugmentor retrievalAugmentor;
-
+    private final Assistant assistant;
 
     public OllamaRAG(OllamaChatModel ollamaChatModel,
                      List<SystemPromptEnricher> systemPrompts,
                      RetrievalAugmentor retrievalAugmentor) {
-        this.ollamaChatModel = ollamaChatModel;
-        this.systemPrompts = systemPrompts;
-        this.retrievalAugmentor = retrievalAugmentor;
-    }
-
-    public String askOllama(String question) {
-        logger.info("Asking Ollama {}...", question);
-
-        Assistant assistant = AiServices.builder(Assistant.class)
+        this.assistant = AiServices.builder(Assistant.class)
                 .chatLanguageModel(ollamaChatModel)
                 .chatMemory(MessageWindowChatMemory.withMaxMessages(10))
                 .retrievalAugmentor(retrievalAugmentor)
@@ -41,7 +29,10 @@ public class OllamaRAG {
                         .map(promptEnricher -> promptEnricher.enrichPrompt(o.toString()))
                         .collect(Collectors.joining("\n")))
                 .build();
+    }
 
+    public String askOllama(String question) {
+        logger.info("Asking Ollama {}...", question);
         return assistant.answer(question);
     }
 }
