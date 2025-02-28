@@ -13,6 +13,7 @@ import java.util.Scanner;
 public class ChatConsole implements ApplicationRunner {
 
     private static final Logger logger = LoggerFactory.getLogger(ChatConsole.class);
+    public static final String END_OF_PROMPT_TOKEN = "<<EOP>>";
 
     private final OllamaRAG ollamaRAG;
 
@@ -24,9 +25,10 @@ public class ChatConsole implements ApplicationRunner {
     public void run(ApplicationArguments args) {
         String query = "";
         while (!query.contentEquals("exit")) {
-            Scanner myObj = new Scanner(System.in);
+            Scanner scanner = new Scanner(System.in);
             System.out.print(">>>");
-            query = myObj.nextLine();
+
+            query = readAllLines(scanner);
             logger.info("Asking Ollama: {}", query);
             try {
                 String response = ollamaRAG.askOllama(query);
@@ -35,5 +37,14 @@ public class ChatConsole implements ApplicationRunner {
                 logger.error("Error while asking Ollama: {}", e.getMessage());
             }
         }
+    }
+
+    private static String readAllLines(Scanner scanner) {
+        StringBuilder stringBuilder = new StringBuilder();
+        String line;
+        while (!(line = scanner.nextLine()).equalsIgnoreCase(END_OF_PROMPT_TOKEN)) {
+            stringBuilder.append(line).append(System.lineSeparator());
+        }
+        return stringBuilder.toString();
     }
 }
