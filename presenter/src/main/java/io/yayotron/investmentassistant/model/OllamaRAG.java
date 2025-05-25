@@ -6,6 +6,7 @@ import dev.langchain4j.model.ollama.OllamaChatModel;
 import dev.langchain4j.rag.RetrievalAugmentor;
 import dev.langchain4j.service.AiServices;
 import io.yayotron.investmentassistant.prompt.SystemPromptEnricher;
+import io.yayotron.investmentassistant.presenter.tool.StockPriceTool;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -18,15 +19,18 @@ public class OllamaRAG {
 
     public OllamaRAG(OllamaChatModel ollamaChatModel,
                      List<SystemPromptEnricher> systemPrompts,
-                     RetrievalAugmentor retrievalAugmentor) {
+                     RetrievalAugmentor retrievalAugmentor,
+                     StockPriceTool stockPriceTool) { // Added StockPriceTool
         this.assistant = AiServices.builder(Assistant.class)
                 .chatLanguageModel(ollamaChatModel)
                 .chatMemory(MessageWindowChatMemory.withMaxMessages(500))
+                .tools(stockPriceTool) // Added StockPriceTool
                 .moderationModel(new DisabledModerationModel())
                 .retrievalAugmentor(retrievalAugmentor)
                 .systemMessageProvider(o -> systemPrompts.stream()
                         .map(promptEnricher -> promptEnricher.enrichPrompt(o.toString()))
                         .collect(Collectors.joining("\n")))
+                // .tools() can be called multiple times or with multiple arguments
                 .build();
     }
 

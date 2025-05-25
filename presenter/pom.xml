@@ -57,6 +57,11 @@
 			<version>1.0.0-alpha1</version>
 		</dependency>
 		<dependency>
+            <groupId>com.capgemini</groupId>
+            <artifactId>feeder</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
+        <dependency>
 			<groupId>dev.langchain4j</groupId>
 			<artifactId>langchain4j-web-search-engine-google-custom</artifactId>
 			<version>${langchain4j.version}</version>
