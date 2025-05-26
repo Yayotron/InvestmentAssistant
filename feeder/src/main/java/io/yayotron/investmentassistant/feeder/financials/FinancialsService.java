@@ -2,6 +2,9 @@ package io.yayotron.investmentassistant.feeder.financials;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.yayotron.investmentassistant.feeder.common.ApiErrorHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -14,15 +17,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Arrays;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 public class FinancialsService {
 
+    private static final Logger logger = LoggerFactory.getLogger(FinancialsService.class);
     private static final String ALPHA_VANTAGE_URL = "https://www.alphavantage.co/query";
     private final String apiKey;
     private final RestTemplate restTemplate;
     private final ObjectMapper objectMapper;
+    private final ApiErrorHandler apiErrorHandler;
 
     private static final List<String> OVERVIEW_METRICS = Arrays.asList(
         "Symbol", "MarketCapitalization", "EBITDA", "PERatio", "EPS",
@@ -38,14 +44,17 @@ public class FinancialsService {
         this.apiKey = apiKey;
         this.restTemplate = new RestTemplate();
         this.objectMapper = new ObjectMapper();
+        this.apiErrorHandler = new ApiErrorHandler(); // Instantiate directly
     }
 
     @Cacheable(value = "companyOverview", key = "#symbol")
     public Map<String, String> getCompanyOverview(String symbol) {
         if (isApiKeyInvalid()) {
-            return Collections.singletonMap("error", "API key not configured");
+            logger.warn("AlphaVantage API key is not configured for FinancialsService.");
+            return apiErrorHandler.createSingletonErrorResponse("API key not configured", logger);
         }
 
+        logger.info("Fetching company overview for symbol: {}", symbol);
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(ALPHA_VANTAGE_URL)
                 .queryParam("function", "OVERVIEW")
                 .queryParam("symbol", symbol)
@@ -54,51 +63,52 @@ public class FinancialsService {
         try {
             String response = restTemplate.getForObject(builder.toUriString(), String.class);
             if (response == null || response.isEmpty()) {
-                return Collections.singletonMap("error", "No data received from API for company overview");
-            }
-            // Check for API limit or error messages
-            if (response.contains("Error Message") || response.contains("Information")) {
-                 Map<String, Object> errorResponse = objectMapper.readValue(response, new TypeReference<Map<String, Object>>() {});
-                 if (errorResponse.containsKey("Error Message")) {
-                    return Collections.singletonMap("error", "API Error: " + errorResponse.get("Error Message"));
-                 }
-                 if (errorResponse.containsKey("Information")) {
-                    return Collections.singletonMap("error", "API Info: " + errorResponse.get("Information"));
-                 }
+                logger.warn("No response received from AlphaVantage for company overview, symbol {}", symbol);
+                return apiErrorHandler.createSingletonErrorResponse("No data received from API for company overview", logger);
             }
 
-
-            Map<String, String> fullOverview = objectMapper.readValue(response, new TypeReference<Map<String, String>>() {});
+            Map<String, Object> rawResponseMap = objectMapper.readValue(response, new TypeReference<Map<String, Object>>() {});
+            Optional<Map<String, String>> apiError = apiErrorHandler.handleAlphaVantageError(rawResponseMap, "FinancialsService.getCompanyOverview", symbol, logger);
+            if (apiError.isPresent()) {
+                return apiError.get();
+            }
             
-            if (fullOverview.isEmpty() || (fullOverview.containsKey("Symbol") && fullOverview.get("Symbol") == null) ) {
-                 return Collections.singletonMap("error", "No overview data found for symbol: " + symbol + ". The symbol may be invalid or delisted.");
+            // Re-cast to the expected type if no error, assuming it's Map<String, String> for overview
+            Map<String, String> fullOverview = objectMapper.convertValue(rawResponseMap, new TypeReference<Map<String, String>>() {});
+
+            if (fullOverview.isEmpty() || (fullOverview.containsKey("Symbol") && fullOverview.get("Symbol") == null)) {
+                logger.warn("No company overview data found for symbol: {}. Symbol may be invalid or delisted. Response: {}", symbol, response.substring(0, Math.min(response.length(), 500)));
+                return apiErrorHandler.createErrorResponse("No overview data found for symbol: " + symbol, "Symbol may be invalid or delisted.", logger);
             }
 
             Map<String, String> result = new HashMap<>();
             for (String metric : OVERVIEW_METRICS) {
-                if (fullOverview.containsKey(metric) && fullOverview.get(metric) != null && !fullOverview.get(metric).equals("None") && !fullOverview.get(metric).isEmpty()) {
-                    result.put(metric, fullOverview.get(metric));
+                String value = fullOverview.get(metric);
+                if (value != null && !value.equals("None") && !value.isEmpty()) {
+                    result.put(metric, value);
                 } else {
+                    logger.trace("Metric '{}' not available or 'None' for symbol {}", metric, symbol);
                     result.put(metric, "N/A");
                 }
             }
+            logger.info("Successfully fetched company overview for symbol: {}", symbol);
             return result;
 
         } catch (IOException e) {
-            System.err.println("Error parsing JSON response for company overview (" + symbol + "): " + e.getMessage());
-            return Collections.singletonMap("error", "Failed to parse company overview response");
+            return apiErrorHandler.createErrorResponse("Failed to parse company overview response for symbol " + symbol, logger, e);
         } catch (Exception e) {
-            System.err.println("Error fetching company overview for " + symbol + ": " + e.getMessage());
-            return Collections.singletonMap("error", "Failed to fetch company overview data");
+            return apiErrorHandler.createErrorResponse("Failed to fetch company overview for symbol " + symbol, logger, e);
         }
     }
 
     @Cacheable(value = "earningsData", key = "#symbol")
     public Map<String, Object> getEarningsData(String symbol) {
         if (isApiKeyInvalid()) {
-            return Collections.singletonMap("error", "API key not configured");
+            logger.warn("AlphaVantage API key is not configured for FinancialsService.");
+            return apiErrorHandler.createSingletonErrorResponse("API key not configured", logger);
         }
 
+        logger.info("Fetching earnings data for symbol: {}", symbol);
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(ALPHA_VANTAGE_URL)
                 .queryParam("function", "EARNINGS")
                 .queryParam("symbol", symbol)
@@ -106,24 +116,22 @@ public class FinancialsService {
 
         try {
             String response = restTemplate.getForObject(builder.toUriString(), String.class);
-             if (response == null || response.isEmpty()) {
-                return Collections.singletonMap("error", "No data received from API for earnings data");
-            }
-            // Check for API limit or error messages
-            if (response.contains("Error Message") || response.contains("Information")) {
-                 Map<String, Object> errorResponse = objectMapper.readValue(response, new TypeReference<Map<String, Object>>() {});
-                 if (errorResponse.containsKey("Error Message")) {
-                    return Collections.singletonMap("error", "API Error: " + errorResponse.get("Error Message"));
-                 }
-                 if (errorResponse.containsKey("Information")) {
-                    return Collections.singletonMap("error", "API Info: " + errorResponse.get("Information"));
-                 }
+            if (response == null || response.isEmpty()) {
+                logger.warn("No response received from AlphaVantage for earnings data, symbol {}", symbol);
+                return apiErrorHandler.createSingletonErrorResponse("No data received from API for earnings data", logger);
             }
             
             Map<String, Object> rawEarningsData = objectMapper.readValue(response, new TypeReference<Map<String, Object>>() {});
+            Optional<Map<String, String>> apiError = apiErrorHandler.handleAlphaVantageError(rawEarningsData, "FinancialsService.getEarningsData", symbol, logger);
+            if (apiError.isPresent()) {
+                // The earnings data structure is Map<String, Object>, not Map<String, String> for error.
+                // We need to ensure consistency or handle this. For now, let's conform to error map type.
+                return apiError.get(); 
+            }
 
-            if (rawEarningsData.isEmpty() || (rawEarningsData.containsKey("symbol") && rawEarningsData.get("symbol") == null) ) {
-                 return Collections.singletonMap("error", "No earnings data found for symbol: " + symbol + ". The symbol may be invalid or delisted.");
+            if (rawEarningsData.isEmpty() || (rawEarningsData.containsKey("symbol") && rawEarningsData.get("symbol") == null)) {
+                logger.warn("No earnings data found for symbol: {}. Symbol may be invalid or delisted. Response: {}", symbol, response.substring(0, Math.min(response.length(), 500)));
+                return apiErrorHandler.createErrorResponse("No earnings data found for symbol: " + symbol, "Symbol may be invalid or delisted.", logger);
             }
 
             Map<String, Object> result = new HashMap<>();
@@ -132,23 +140,24 @@ public class FinancialsService {
             if (rawEarningsData.containsKey("annualEarnings")) {
                 result.put("annualEarnings", extractEarningsDetails((List<Map<String, String>>) rawEarningsData.get("annualEarnings")));
             } else {
+                logger.debug("No 'annualEarnings' field found for symbol {}", symbol);
                 result.put("annualEarnings", Collections.emptyList());
             }
 
             if (rawEarningsData.containsKey("quarterlyEarnings")) {
                 result.put("quarterlyEarnings", extractEarningsDetails((List<Map<String, String>>) rawEarningsData.get("quarterlyEarnings")));
             } else {
+                logger.debug("No 'quarterlyEarnings' field found for symbol {}", symbol);
                 result.put("quarterlyEarnings", Collections.emptyList());
             }
             
+            logger.info("Successfully fetched earnings data for symbol: {}", symbol);
             return result;
 
         } catch (IOException e) {
-            System.err.println("Error parsing JSON response for earnings data (" + symbol + "): " + e.getMessage());
-            return Collections.singletonMap("error", "Failed to parse earnings data response");
-        } catch (Exception e) {
-            System.err.println("Error fetching earnings data for " + symbol + ": " + e.getMessage());
-            return Collections.singletonMap("error", "Failed to fetch earnings data");
+            return apiErrorHandler.createErrorResponse("Failed to parse earnings data response for symbol " + symbol, logger, e);
+        } catch (Exception e) { // Catching broader exceptions
+            return apiErrorHandler.createErrorResponse("Failed to fetch earnings data for symbol " + symbol, logger, e);
         }
     }
 

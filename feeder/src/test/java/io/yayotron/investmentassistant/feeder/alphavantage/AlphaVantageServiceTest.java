@@ -8,12 +8,12 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.cache.CacheManager;
-import org.springframework.cache.concurrent.ConcurrentMapCacheManager;
+// Import Logger/LoggerFactory if test-specific logging is desired, though typically not for assertions
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.Arrays;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -24,54 +24,36 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 public class AlphaVantageServiceTest {
 
+    // private static final Logger logger = LoggerFactory.getLogger(AlphaVantageServiceTest.class); // If needed
+
     @Mock
     private RestTemplate restTemplate;
 
-    @Spy // Using Spy for ObjectMapper to allow real JSON parsing
+    @Spy // Using Spy for ObjectMapper to allow real JSON parsing and verify its usage if needed
     private ObjectMapper objectMapper = new ObjectMapper();
 
-    @InjectMocks
+    // @InjectMocks cannot be used if we manually pass mocks in constructor / set them via reflection
     private AlphaVantageService alphaVantageService;
 
-    private final String DUMMY_API_KEY = "TEST_KEY";
+    private final String DUMMY_API_KEY = "TEST_KEY_ALPHA";
+    private final String INVALID_API_KEY_PLACEHOLDER = "YOUR_API_KEY";
+
 
     @BeforeEach
     void setUp() {
         // Initialize AlphaVantageService with a dummy API key for tests
+        // ApiErrorHandler is instantiated within AlphaVantageService, so not mocked here.
         alphaVantageService = new AlphaVantageService(DUMMY_API_KEY);
-        // Inject the mocked RestTemplate and spied ObjectMapper
         ReflectionTestUtils.setField(alphaVantageService, "restTemplate", restTemplate);
         ReflectionTestUtils.setField(alphaVantageService, "objectMapper", objectMapper);
-
-        // Basic CacheManager setup for testing @Cacheable
-        // In a Spring Boot test, you might use @SpringBootTest and auto-configured CacheManager
-        // For a plain unit test, manually creating one is simpler.
-        CacheManager cacheManager = new ConcurrentMapCacheManager("stockData");
-        // The AlphaVantageService isn't managed by Spring in this unit test,
-        // so @Cacheable won't work automatically.
-        // To test caching properly here, we'd need Spring context or a proxy.
-        // For now, the existing tests cover the logic *within* getStockData.
-        // A separate integration test would be better for @Cacheable.
-        // However, if we wanted to force it, we would need to wrap alphaVantageService
-        // in a proxy that handles @Cacheable, which is complex for a unit test.
-        //
-        // Let's assume for now that @Cacheable is tested in an integration test.
-        // The provided structure is a unit test, not an integration test.
-        // So, I will skip direct testing of @Cacheable here and focus on logic.
-        // If direct testing of @Cacheable in this *unit* test is strictly required,
-        // the test setup needs to be significantly more complex (e.g. using AOP proxying manually).
-
-        // The alternative is to use Spring's testing support.
-        // Let's proceed by adding a test that *would* show caching if it were an integration test,
-        // acknowledging it won't truly test @Cacheable in this pure Mockito setup without Spring context.
+        // Note: Caching tests are limited in pure unit tests without Spring context.
+        // The @Cacheable annotation won't be active.
     }
 
-    // This test is more of an integration test for caching.
-    // For it to work correctly with @Cacheable, Spring context is needed.
-    // In a pure unit test like this, it will just call the method twice without cache interaction.
-    // I will add it with comments explaining this limitation.
     @Test
-    void getStockData_cachingBehavior_requiresSpringContextToFullyTest() throws Exception {
+    void getStockData_cachingBehavior_noteAboutSpringContext() throws Exception {
+        // This test primarily verifies the logic when called multiple times.
+        // True @Cacheable testing requires Spring context.
         String symbol = "IBM_CACHE";
         String mockJsonResponse = """
         {
@@ -86,50 +68,35 @@ public class AlphaVantageServiceTest {
 
         when(restTemplate.getForObject(anyString(), eq(String.class))).thenReturn(mockJsonResponse);
 
-        // First call - should hit the restTemplate
         Map<String, String> stockData1 = alphaVantageService.getStockData(symbol);
-        assertNotNull(stockData1);
-        assertEquals("IBM_CACHE", stockData1.get("symbol"));
+        assertEquals("IBM_CACHE", stockData1.get("symbol"), "First call should fetch data.");
 
-        // Second call - in a true @Cacheable scenario, this should NOT hit restTemplate
         Map<String, String> stockData2 = alphaVantageService.getStockData(symbol);
-        assertNotNull(stockData2);
-        assertEquals("IBM_CACHE", stockData2.get("symbol"));
+        assertEquals("IBM_CACHE", stockData2.get("symbol"), "Second call should also fetch data in this unit test.");
 
-        // In this unit test setup (without Spring managing the bean and its aspects like @Cacheable),
-        // restTemplate will be called twice. An integration test is needed for true @Cacheable verification.
-        // If this were an integration test with Spring context, we would expect times(1).
-        verify(restTemplate, times(2)).getForObject(anyString(), eq(String.class)); 
-        // To properly test @Cacheable, this test should be in a Spring Boot test environment.
-        // For example, using @SpringBootTest and injecting the service.
+        // Verify RestTemplate was called twice because @Cacheable is not active without Spring context.
+        verify(restTemplate, times(2)).getForObject(anyString(), eq(String.class));
+        // A full integration test (@SpringBootTest) would be needed to verify times(1) due to caching.
     }
 
-
     @Test
-    void getStockData_success() throws Exception {
+    void getStockData_success() {
         String symbol = "IBM";
         String mockJsonResponse = """
         {
             "Global Quote": {
                 "01. symbol": "IBM",
-                "02. open": "167.0000",
-                "03. high": "168.0000",
-                "04. low": "166.5000",
                 "05. price": "167.5000",
                 "06. volume": "1234567",
-                "07. latest trading day": "2024-03-15",
-                "08. previous close": "166.0000",
-                "09. change": "1.5000",
-                "10. change percent": "0.9036%"
+                "07. latest trading day": "2024-03-15"
             }
         }
         """;
 
-        when(restTemplate.getForObject(anyString(), eq(String.class))).thenReturn(mockJsonResponse);
+        when(restTemplate.getForObject(contains("symbol=" + symbol), eq(String.class))).thenReturn(mockJsonResponse);
 
         Map<String, String> stockData = alphaVantageService.getStockData(symbol);
 
-        assertNotNull(stockData);
         assertEquals("IBM", stockData.get("symbol"));
         assertEquals("167.5000", stockData.get("price"));
         assertEquals("1234567", stockData.get("volume"));

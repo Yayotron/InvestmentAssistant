@@ -6,9 +6,12 @@ import dev.langchain4j.model.ollama.OllamaChatModel;
 import dev.langchain4j.rag.RetrievalAugmentor;
 import dev.langchain4j.service.AiServices;
 import io.yayotron.investmentassistant.prompt.SystemPromptEnricher;
+import io.yayotron.investmentassistant.presenter.tool.CompanyHealthTool;
+import io.yayotron.investmentassistant.presenter.tool.FinancialAnalysisTool;
 import io.yayotron.investmentassistant.presenter.tool.StockPriceTool;
 import org.springframework.stereotype.Component;
 
+import java.util.Arrays; // Import for List.of equivalent if needed, or just use Arrays.asList
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -16,15 +19,21 @@ import java.util.stream.Collectors;
 public class OllamaRAG {
 
     private final Assistant assistant;
+    private final FinancialAnalysisTool financialAnalysisTool;
+    private final CompanyHealthTool companyHealthTool; // New field
 
     public OllamaRAG(OllamaChatModel ollamaChatModel,
                      List<SystemPromptEnricher> systemPrompts,
                      RetrievalAugmentor retrievalAugmentor,
-                     StockPriceTool stockPriceTool) { // Added StockPriceTool
+                     StockPriceTool stockPriceTool,
+                     FinancialAnalysisTool financialAnalysisTool,
+                     CompanyHealthTool companyHealthTool) { // New tool parameter
+        this.financialAnalysisTool = financialAnalysisTool;
+        this.companyHealthTool = companyHealthTool; // Assign new tool
         this.assistant = AiServices.builder(Assistant.class)
                 .chatLanguageModel(ollamaChatModel)
                 .chatMemory(MessageWindowChatMemory.withMaxMessages(500))
-                .tools(stockPriceTool) // Added StockPriceTool
+                .tools(Arrays.asList(stockPriceTool, financialAnalysisTool, companyHealthTool)) // Include all three tools
                 .moderationModel(new DisabledModerationModel())
                 .retrievalAugmentor(retrievalAugmentor)
                 .systemMessageProvider(o -> systemPrompts.stream()

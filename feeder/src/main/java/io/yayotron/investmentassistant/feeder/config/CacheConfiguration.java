@@ -52,6 +52,12 @@ public class CacheConfiguration {
                         .expireAfterWrite(24, TimeUnit.HOURS)
                         .maximumSize(500) // Assuming a moderate number of industries per exchange
                         .build());
+
+        CaffeineCache companyHealthScoreCache = new CaffeineCache("companyHealthScore",
+                Caffeine.newBuilder()
+                        .expireAfterWrite(24, TimeUnit.HOURS) // Same TTL as other fundamental data
+                        .maximumSize(500) // Assuming scorecard is generated per company
+                        .build());
         
         SimpleCacheManager manager = new SimpleCacheManager();
         manager.setCaches(Arrays.asList(
@@ -60,7 +66,8 @@ public class CacheConfiguration {
                 earningsDataCache,
                 sectorPerformanceCache,
                 fmpSectorPECache,
-                fmpIndustryPECache
+                fmpIndustryPECache,
+                companyHealthScoreCache
         ));
         return manager;
     }
