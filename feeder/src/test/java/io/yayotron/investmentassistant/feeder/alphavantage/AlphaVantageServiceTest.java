@@ -2,19 +2,19 @@ package io.yayotron.investmentassistant.feeder.alphavantage;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
-// Import Logger/LoggerFactory if test-specific logging is desired, though typically not for assertions
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.client.RestTemplate;
 
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
+import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -22,81 +22,58 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class AlphaVantageServiceTest {
-
-    // private static final Logger logger = LoggerFactory.getLogger(AlphaVantageServiceTest.class); // If needed
+class AlphaVantageServiceTest {
 
     @Mock
     private RestTemplate restTemplate;
 
-    @Spy // Using Spy for ObjectMapper to allow real JSON parsing and verify its usage if needed
+    @Spy
     private ObjectMapper objectMapper = new ObjectMapper();
 
-    // @InjectMocks cannot be used if we manually pass mocks in constructor / set them via reflection
     private AlphaVantageService alphaVantageService;
 
     private final String DUMMY_API_KEY = "TEST_KEY_ALPHA";
-    private final String INVALID_API_KEY_PLACEHOLDER = "YOUR_API_KEY";
-
 
     @BeforeEach
     void setUp() {
-        // Initialize AlphaVantageService with a dummy API key for tests
-        // ApiErrorHandler is instantiated within AlphaVantageService, so not mocked here.
         alphaVantageService = new AlphaVantageService(DUMMY_API_KEY);
         ReflectionTestUtils.setField(alphaVantageService, "restTemplate", restTemplate);
         ReflectionTestUtils.setField(alphaVantageService, "objectMapper", objectMapper);
-        // Note: Caching tests are limited in pure unit tests without Spring context.
-        // The @Cacheable annotation won't be active.
     }
 
     @Test
-    void getStockData_cachingBehavior_noteAboutSpringContext() throws Exception {
-        // This test primarily verifies the logic when called multiple times.
-        // True @Cacheable testing requires Spring context.
+    @DisplayName("Given stock data, when getStockData is called multiple times, then caching should be verified")
+    void givenStockData_whenGetStockDataIsCalledMultipleTimes_thenCachingShouldBeVerified() throws IOException {
+        // given
         String symbol = "IBM_CACHE";
-        String mockJsonResponse = """
-        {
-            "Global Quote": {
-                "01. symbol": "IBM_CACHE",
-                "05. price": "170.00",
-                "06. volume": "2000000",
-                "07. latest trading day": "2024-03-16"
-            }
-        }
-        """;
+        String mockJsonResponse = new String(Objects.requireNonNull(this.getClass().getResourceAsStream("/json/alphavantage/success.json")).readAllBytes(), StandardCharsets.UTF_8);
 
         when(restTemplate.getForObject(anyString(), eq(String.class))).thenReturn(mockJsonResponse);
 
+        // when
         Map<String, String> stockData1 = alphaVantageService.getStockData(symbol);
-        assertEquals("IBM_CACHE", stockData1.get("symbol"), "First call should fetch data.");
-
         Map<String, String> stockData2 = alphaVantageService.getStockData(symbol);
-        assertEquals("IBM_CACHE", stockData2.get("symbol"), "Second call should also fetch data in this unit test.");
 
-        // Verify RestTemplate was called twice because @Cacheable is not active without Spring context.
+        // then
+        assertEquals("IBM", stockData1.get("symbol"), "First call should fetch data.");
+        assertEquals("IBM", stockData2.get("symbol"), "Second call should also fetch data in this unit test.");
+
         verify(restTemplate, times(2)).getForObject(anyString(), eq(String.class));
-        // A full integration test (@SpringBootTest) would be needed to verify times(1) due to caching.
     }
 
     @Test
-    void getStockData_success() {
+    @DisplayName("Given valid stock data, when getStockData is called, then the company profile is returned")
+    void givenValidStockData_whenGetStockDataIsCalled_thenCompanyProfileIsReturned() throws IOException {
+        // given
         String symbol = "IBM";
-        String mockJsonResponse = """
-        {
-            "Global Quote": {
-                "01. symbol": "IBM",
-                "05. price": "167.5000",
-                "06. volume": "1234567",
-                "07. latest trading day": "2024-03-15"
-            }
-        }
-        """;
+        String mockJsonResponse = new String(Objects.requireNonNull(this.getClass().getResourceAsStream("/json/alphavantage/success.json")).readAllBytes(), StandardCharsets.UTF_8);
 
         when(restTemplate.getForObject(contains("symbol=" + symbol), eq(String.class))).thenReturn(mockJsonResponse);
 
+        // when
         Map<String, String> stockData = alphaVantageService.getStockData(symbol);
 
+        // then
         assertEquals("IBM", stockData.get("symbol"));
         assertEquals("167.5000", stockData.get("price"));
         assertEquals("1234567", stockData.get("volume"));
@@ -107,7 +84,9 @@ public class AlphaVantageServiceTest {
     }
 
     @Test
-    void getStockData_apiError() throws Exception {
+    @DisplayName("Given an API error, when getStockData is called, then an error is returned")
+    void givenApiError_whenGetStockDataIsCalled_thenErrorIsReturned() {
+        // given
         String symbol = "ERROR_SYM";
         String mockErrorResponse = """
         {
@@ -117,17 +96,21 @@ public class AlphaVantageServiceTest {
 
         when(restTemplate.getForObject(anyString(), eq(String.class))).thenReturn(mockErrorResponse);
 
+        // when
         Map<String, String> stockData = alphaVantageService.getStockData(symbol);
 
+        // then
         assertNotNull(stockData);
         assertTrue(stockData.containsKey("error"));
         assertTrue(stockData.get("error").contains("Invalid API call"));
 
         verify(restTemplate, times(1)).getForObject(anyString(), eq(String.class));
     }
-    
+
     @Test
-    void getStockData_apiInformation() throws Exception {
+    @DisplayName("Given an API information message, when getStockData is called, then an error is returned")
+    void givenApiInformation_whenGetStockDataIsCalled_thenErrorIsReturned() {
+        // given
         String symbol = "INFO_SYM";
         String mockInfoResponse = """
         {
@@ -137,89 +120,106 @@ public class AlphaVantageServiceTest {
 
         when(restTemplate.getForObject(anyString(), eq(String.class))).thenReturn(mockInfoResponse);
 
+        // when
         Map<String, String> stockData = alphaVantageService.getStockData(symbol);
 
+        // then
         assertNotNull(stockData);
-        assertTrue(stockData.containsKey("error")); // We map "Information" to an "error" for simplicity in this client
+        assertTrue(stockData.containsKey("error"));
         assertTrue(stockData.get("error").contains("Thank you for using Alpha Vantage"));
 
         verify(restTemplate, times(1)).getForObject(anyString(), eq(String.class));
     }
 
     @Test
-    void getStockData_restTemplateException() {
+    @DisplayName("Given a RestTemplate exception, when getStockData is called, then an error is returned")
+    void givenRestTemplateException_whenGetStockDataIsCalled_thenErrorIsReturned() {
+        // given
         String symbol = "FAIL_SYM";
         when(restTemplate.getForObject(anyString(), eq(String.class))).thenThrow(new RuntimeException("Network error"));
 
+        // when
         Map<String, String> stockData = alphaVantageService.getStockData(symbol);
 
+        // then
         assertNotNull(stockData);
         assertTrue(stockData.containsKey("error"));
-        assertEquals("Failed to fetch data", stockData.get("error"));
+        assertTrue(stockData.get("error").contains("Failed to fetch stock data"));
 
         verify(restTemplate, times(1)).getForObject(anyString(), eq(String.class));
     }
-    
+
     @Test
-    void getStockData_jsonParsingError() throws Exception {
+    @DisplayName("Given a JSON parsing error, when getStockData is called, then an error is returned")
+    void givenJsonParsingError_whenGetStockDataIsCalled_thenErrorIsReturned() {
+        // given
         String symbol = "BAD_JSON";
-        String mockBadJsonResponse = "{ \"Global Quote\": { \"01. symbol\": \"BAD\""; // Incomplete JSON
+        String mockBadJsonResponse = "{ \"Global Quote\": { \"01. symbol\": \"BAD\"";
 
         when(restTemplate.getForObject(anyString(), eq(String.class))).thenReturn(mockBadJsonResponse);
 
+        // when
         Map<String, String> stockData = alphaVantageService.getStockData(symbol);
 
+        // then
         assertNotNull(stockData);
         assertTrue(stockData.containsKey("error"));
-        assertEquals("Failed to parse response", stockData.get("error"));
-        
+        assertTrue(stockData.get("error").contains("Failed to parse stock data response"));
+
         verify(restTemplate, times(1)).getForObject(anyString(), eq(String.class));
     }
 
     @Test
-    void getStockData_nullResponseFromApi() {
+    @DisplayName("Given a null response from the API, when getStockData is called, then an error is returned")
+    void givenNullResponseFromApi_whenGetStockDataIsCalled_thenErrorIsReturned() {
+        // given
         String symbol = "NULL_RESP";
         when(restTemplate.getForObject(anyString(), eq(String.class))).thenReturn(null);
 
+        // when
         Map<String, String> stockData = alphaVantageService.getStockData(symbol);
 
+        // then
         assertNotNull(stockData);
         assertTrue(stockData.containsKey("error"));
-        assertEquals("No data received or unexpected response format", stockData.get("error"));
+        assertEquals("No data received from API for stock data", stockData.get("error"));
 
         verify(restTemplate, times(1)).getForObject(anyString(), eq(String.class));
     }
-    
+
     @Test
-    void getStockData_emptyResponseFromApi() {
+    @DisplayName("Given an empty response from the API, when getStockData is called, then an error is returned")
+    void givenEmptyResponseFromApi_whenGetStockDataIsCalled_thenErrorIsReturned() {
+        // given
         String symbol = "EMPTY_RESP";
         when(restTemplate.getForObject(anyString(), eq(String.class))).thenReturn("");
 
+        // when
         Map<String, String> stockData = alphaVantageService.getStockData(symbol);
 
+        // then
         assertNotNull(stockData);
         assertTrue(stockData.containsKey("error"));
-        // This will likely be a parsing error, depending on ObjectMapper's behavior with empty strings
-        // For this test, we'll assume it leads to a parsing failure handled by the catch block
-        assertEquals("Failed to parse response", stockData.get("error"));
+        assertEquals("No data received from API for stock data", stockData.get("error"));
 
         verify(restTemplate, times(1)).getForObject(anyString(), eq(String.class));
     }
 
     @Test
-    void getStockData_apiKeyNotConfigured() {
-        // Temporarily set API key to a "not configured" state
+    @DisplayName("Given an unconfigured API key, when getStockData is called, then an error is returned")
+    void givenUnconfiguredApiKey_whenGetStockDataIsCalled_thenErrorIsReturned() {
+        // given
         ReflectionTestUtils.setField(alphaVantageService, "apiKey", "YOUR_API_KEY");
-        
         String symbol = "ANY_SYM";
+
+        // when
         Map<String, String> stockData = alphaVantageService.getStockData(symbol);
-        
+
+        // then
         assertNotNull(stockData);
         assertTrue(stockData.containsKey("error"));
         assertEquals("API key not configured", stockData.get("error"));
-        
-        // Restore API key for other tests
-        ReflectionTestUtils.setField(alphaVantageService, "apiKey", DUMMY_API_KEY);
-        verifyNoInteractions(restTemplate); // Ensure RestTemplate was not called
+
+        verifyNoInteractions(restTemplate);
     }
 }

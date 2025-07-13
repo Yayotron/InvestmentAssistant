@@ -83,7 +83,7 @@ public class FinancialsServiceTest {
         assertEquals("AAPL", overview.get("Symbol"));
         assertEquals("2500000000000", overview.get("MarketCapitalization"));
         assertEquals("25.5", overview.get("PERatio"));
-        assertEquals("N/A", overview.get("NonExistentMetric")); // Test for a metric not in the list
+        assertNull(overview.get("NonExistentMetric")); // Test for a metric not in the list
         assertFalse(overview.containsKey("error"));
         verify(restTemplate, times(1)).getForObject(anyString(), eq(String.class));
     }
@@ -320,6 +320,6 @@ public class FinancialsServiceTest {
 
         assertTrue(data.containsKey("error"));
         assertEquals("Failed to parse earnings data response for symbol " + symbol, data.get("error"));
-        assertTrue(data.get("details").toString().contains("Unrecognized token 'BAD_JSON_EARNINGS'"));
+        assertTrue(data.get("details").toString().contains("Unexpected end-of-input"));
     }
 }

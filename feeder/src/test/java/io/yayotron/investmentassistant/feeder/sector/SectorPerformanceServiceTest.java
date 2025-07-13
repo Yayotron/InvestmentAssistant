@@ -142,7 +142,6 @@ public class SectorPerformanceServiceTest {
     
     @Test
     void getSectorPerformance_jsonParsingError() {
-        String symbol = "BAD_JSON_SECTOR";
         String mockBadJsonResponse = "{ \"Rank A: Real-Time Performance\": { \"Energy\": \"1.23%\", "; // Incomplete JSON
         when(restTemplate.getForObject(anyString(), eq(String.class))).thenReturn(mockBadJsonResponse);
         Map<String, Map<String, String>> data = sectorPerformanceService.getSectorPerformance();
@@ -150,6 +149,6 @@ public class SectorPerformanceServiceTest {
         assertTrue(data.containsKey("error"));
         Map<String, String> errorDetails = data.get("error");
         assertEquals("Failed to parse sector performance response", errorDetails.get("error"));
-        assertTrue(errorDetails.get("details").toString().contains("Unrecognized token 'BAD_JSON_SECTOR'"));
+        assertTrue(errorDetails.get("details").toString().contains("Unexpected end-of-input"));
     }
 }

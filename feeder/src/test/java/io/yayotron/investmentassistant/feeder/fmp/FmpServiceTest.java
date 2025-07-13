@@ -186,7 +186,7 @@ public class FmpServiceTest {
         assertTrue(data.containsKey("error"));
         Map<String, String> errorDetails = (Map<String, String>) data.get("error");
         assertEquals("Failed to parse FMP industry P/E response (exchange: " + TEST_EXCHANGE + ")", errorDetails.get("error"));
-        assertTrue(errorDetails.get("details").toString().contains("Unrecognized token 'Software'"));
+        assertTrue(errorDetails.get("details").toString().contains("Unexpected end-of-input"));
     }
 
     @Test

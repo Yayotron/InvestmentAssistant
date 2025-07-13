@@ -51,7 +51,7 @@ public class FinancialsService {
     public Map<String, String> getCompanyOverview(String symbol) {
         if (isApiKeyInvalid()) {
             logger.warn("AlphaVantage API key is not configured for FinancialsService.");
-            return apiErrorHandler.createSingletonErrorResponse("API key not configured", logger);
+            return new HashMap<>(apiErrorHandler.createSingletonErrorResponse("API key not configured", logger));
         }
 
         logger.info("Fetching company overview for symbol: {}", symbol);
@@ -64,7 +64,7 @@ public class FinancialsService {
             String response = restTemplate.getForObject(builder.toUriString(), String.class);
             if (response == null || response.isEmpty()) {
                 logger.warn("No response received from AlphaVantage for company overview, symbol {}", symbol);
-                return apiErrorHandler.createSingletonErrorResponse("No data received from API for company overview", logger);
+                return new HashMap<>(apiErrorHandler.createSingletonErrorResponse("No data received from API for company overview", logger));
             }
 
             Map<String, Object> rawResponseMap = objectMapper.readValue(response, new TypeReference<Map<String, Object>>() {});
@@ -95,9 +95,9 @@ public class FinancialsService {
             return result;
 
         } catch (IOException e) {
-            return apiErrorHandler.createErrorResponse("Failed to parse company overview response for symbol " + symbol, logger, e);
+            return new HashMap<>(apiErrorHandler.createErrorResponse("Failed to parse company overview response for symbol " + symbol, logger, e));
         } catch (Exception e) {
-            return apiErrorHandler.createErrorResponse("Failed to fetch company overview for symbol " + symbol, logger, e);
+            return new HashMap<>(apiErrorHandler.createErrorResponse("Failed to fetch company overview for symbol " + symbol, logger, e));
         }
     }
 
@@ -105,7 +105,7 @@ public class FinancialsService {
     public Map<String, Object> getEarningsData(String symbol) {
         if (isApiKeyInvalid()) {
             logger.warn("AlphaVantage API key is not configured for FinancialsService.");
-            return apiErrorHandler.createSingletonErrorResponse("API key not configured", logger);
+            return new HashMap<>(apiErrorHandler.createSingletonErrorResponse("API key not configured", logger));
         }
 
         logger.info("Fetching earnings data for symbol: {}", symbol);
@@ -118,20 +118,18 @@ public class FinancialsService {
             String response = restTemplate.getForObject(builder.toUriString(), String.class);
             if (response == null || response.isEmpty()) {
                 logger.warn("No response received from AlphaVantage for earnings data, symbol {}", symbol);
-                return apiErrorHandler.createSingletonErrorResponse("No data received from API for earnings data", logger);
+                return new HashMap<>(apiErrorHandler.createSingletonErrorResponse("No data received from API for earnings data", logger));
             }
             
             Map<String, Object> rawEarningsData = objectMapper.readValue(response, new TypeReference<Map<String, Object>>() {});
             Optional<Map<String, String>> apiError = apiErrorHandler.handleAlphaVantageError(rawEarningsData, "FinancialsService.getEarningsData", symbol, logger);
             if (apiError.isPresent()) {
-                // The earnings data structure is Map<String, Object>, not Map<String, String> for error.
-                // We need to ensure consistency or handle this. For now, let's conform to error map type.
-                return apiError.get(); 
+                return new HashMap<>(apiError.get());
             }
 
             if (rawEarningsData.isEmpty() || (rawEarningsData.containsKey("symbol") && rawEarningsData.get("symbol") == null)) {
                 logger.warn("No earnings data found for symbol: {}. Symbol may be invalid or delisted. Response: {}", symbol, response.substring(0, Math.min(response.length(), 500)));
-                return apiErrorHandler.createErrorResponse("No earnings data found for symbol: " + symbol, "Symbol may be invalid or delisted.", logger);
+                return new HashMap<>(apiErrorHandler.createErrorResponse("No earnings data found for symbol: " + symbol, "Symbol may be invalid or delisted.", logger));
             }
 
             Map<String, Object> result = new HashMap<>();
@@ -155,9 +153,9 @@ public class FinancialsService {
             return result;
 
         } catch (IOException e) {
-            return apiErrorHandler.createErrorResponse("Failed to parse earnings data response for symbol " + symbol, logger, e);
+            return new HashMap<>(apiErrorHandler.createErrorResponse("Failed to parse earnings data response for symbol " + symbol, logger, e));
         } catch (Exception e) { // Catching broader exceptions
-            return apiErrorHandler.createErrorResponse("Failed to fetch earnings data for symbol " + symbol, logger, e);
+            return new HashMap<>(apiErrorHandler.createErrorResponse("Failed to fetch earnings data for symbol " + symbol, logger, e));
         }
     }
 
