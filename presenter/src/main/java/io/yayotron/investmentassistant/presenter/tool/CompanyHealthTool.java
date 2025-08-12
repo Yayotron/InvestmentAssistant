@@ -1,7 +1,7 @@
 package io.yayotron.investmentassistant.presenter.tool;
 
 import dev.langchain4j.agent.tool.Tool;
-import dev.langchain4j.agent.tool.ToolP;
+import dev.langchain4j.agent.tool.P;
 import io.yayotron.investmentassistant.presenter.health.CompanyHealthScorecardService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,7 +18,7 @@ public class CompanyHealthTool {
     }
 
     @Tool("Gets a financial health scorecard for a given company, including an overall score, key positives, and key negatives.")
-    public String getCompanyHealthScorecard(@ToolP("The stock symbol of the company, e.g., AAPL, MSFT") String symbol) {
+    public String getCompanyHealthScorecard(@P("The stock symbol of the company, e.g., AAPL, MSFT") String symbol) {
         logger.info("Fetching company health scorecard for symbol: {}", symbol);
 
         try {

@@ -16,7 +16,7 @@
 	<description>Consumes data fed to produce an investment strategy for the user.</description>
 
 	<properties>
-		<langchain4j.version>1.0.0-beta2-SNAPSHOT</langchain4j.version>
+		<langchain4j.version>1.3.0</langchain4j.version>
 	</properties>
 
 	<dependencies>
@@ -44,12 +44,12 @@
 		<dependency>
 			<groupId>dev.langchain4j</groupId>
 			<artifactId>langchain4j-easy-rag</artifactId>
-			<version>${langchain4j.version}</version>
+			<version>1.3.0-beta9</version>
 		</dependency>
 		<dependency>
 			<groupId>dev.langchain4j</groupId>
 			<artifactId>langchain4j-pgvector</artifactId>
-			<version>${langchain4j.version}</version>
+			<version>1.3.0-beta9</version>
 		</dependency>
 		<dependency>
 			<groupId>dev.langchain4j</groupId>
@@ -64,7 +64,7 @@
         <dependency>
 			<groupId>dev.langchain4j</groupId>
 			<artifactId>langchain4j-web-search-engine-google-custom</artifactId>
-			<version>${langchain4j.version}</version>
+			<version>1.3.0-beta9</version>
 		</dependency>
 
 		<!-- Logging -->

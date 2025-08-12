@@ -1,6 +1,7 @@
 package io.yayotron.investmentassistant.model;
 
 import dev.langchain4j.data.message.AiMessage;
+import dev.langchain4j.model.chat.response.ChatResponse;
 import dev.langchain4j.model.ollama.OllamaChatModel;
 import dev.langchain4j.model.output.Response;
 import dev.langchain4j.rag.RetrievalAugmentor;
@@ -17,10 +18,11 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -32,18 +34,19 @@ import static org.mockito.Mockito.*;
 
 @SpringBootTest
 @ExtendWith(MockitoExtension.class)
-public class OllamaRAGStockToolIntegrationTest {
+public class OllamaRAGToolsIntegrationTest {
 
-    @MockBean
+    @MockitoBean
     private OllamaChatModel ollamaChatModel; // Mock the LLM
 
     // Mock all underlying feeder services
-    @MockBean private AlphaVantageService alphaVantageService;
-    @MockBean private FinancialsService financialsService;
-    @MockBean private SectorPerformanceService sectorPerformanceService;
-    @MockBean private FmpService fmpService;
+    @MockitoBean
+    private AlphaVantageService alphaVantageService;
+    @MockitoBean private FinancialsService financialsService;
+    @MockitoBean private SectorPerformanceService sectorPerformanceService;
+    @MockitoBean private FmpService fmpService;
 
-    @MockBean private RetrievalAugmentor retrievalAugmentor; // Mock as it's part of OllamaRAG constructor
+    @MockitoBean private RetrievalAugmentor retrievalAugmentor; // Mock as it's part of OllamaRAG constructor
 
     @Autowired private OllamaRAG ollamaRAG; // The system under test
 
@@ -62,8 +65,10 @@ public class OllamaRAGStockToolIntegrationTest {
         // For actual tool usage, the LLM would generate a structured response
         // indicating a tool call. AiServices intercepts this. For these tests,
         // we verify the *effect* of that interception (i.e., service method calls).
-        when(ollamaChatModel.generate(anyList()))
-            .thenReturn(Response.from(AiMessage.from(llmTextResponse)));
+        when(ollamaChatModel.chat(anyList()))
+            .thenReturn(ChatResponse.builder()
+                    .aiMessage(AiMessage.from(llmTextResponse))
+                    .build());
     }
     
     private void setupMockLLMForToolUse() {
@@ -74,14 +79,10 @@ public class OllamaRAGStockToolIntegrationTest {
         // For this test, we'll often make the LLM's response less important than verifying the mock service call.
         // A more advanced mock might return a `ToolExecutionRequest` if we wanted to test that part of Langchain4j.
         // For now, the `Assistant` interface abstracts this, and we test the side-effects (service calls).
-        when(ollamaChatModel.generate(anyList()))
-            .thenAnswer(invocation -> {
-                // This is a placeholder. The actual tool invocation is handled by AiServices.
-                // We are verifying the *underlying service calls* made by the tool.
-                // So, the LLM's response after a tool call isn't strictly necessary to mock perfectly for these tests.
-                // It just needs to return *something* so AiServices completes.
-                return Response.from(AiMessage.from("LLM processed tool response."));
-            });
+        when(ollamaChatModel.chat(anyList()))
+            .thenAnswer(invocation -> ChatResponse.builder()
+                    .aiMessage(AiMessage.from("LLM processed tool response."))
+                    .build());
     }
 
 

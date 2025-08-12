@@ -1,7 +1,7 @@
 package io.yayotron.investmentassistant.presenter.tool;
 
+import dev.langchain4j.agent.tool.P;
 import dev.langchain4j.agent.tool.Tool;
-import dev.langchain4j.agent.tool.ToolP;
 import io.yayotron.investmentassistant.feeder.financials.FinancialsService;
 import io.yayotron.investmentassistant.feeder.fmp.FmpService;
 import io.yayotron.investmentassistant.feeder.sector.SectorPerformanceService;
@@ -31,7 +31,7 @@ public class FinancialAnalysisTool {
     }
 
     @Tool("Gets a comprehensive financial overview for a given company symbol, including market cap, P/E, EPS, and other key metrics.")
-    public String getCompanyFinancialOverview(@ToolP("The stock symbol of the company (e.g., AAPL, MSFT)") String symbol) {
+    public String getCompanyFinancialOverview(@P("The stock symbol of the company (e.g., AAPL, MSFT)") String symbol) {
         logger.info("Fetching company financial overview for symbol: {}", symbol);
         Map<String, String> overviewData = financialsService.getCompanyOverview(symbol);
 
@@ -79,7 +79,7 @@ public class FinancialAnalysisTool {
     }
 
     @Tool("Gets a summary of annual and quarterly earnings (EPS) for a given company symbol.")
-    public String getCompanyEarningsSummary(@ToolP("The stock symbol of the company (e.g., AAPL, MSFT)") String symbol) {
+    public String getCompanyEarningsSummary(@P("The stock symbol of the company (e.g., AAPL, MSFT)") String symbol) {
         logger.info("Fetching company earnings summary for symbol: {}", symbol);
         Map<String, Object> earningsData = financialsService.getEarningsData(symbol);
 
@@ -157,8 +157,8 @@ public class FinancialAnalysisTool {
 
     @Tool("Gets the average P/E ratio for a specific sector on a given stock exchange and lists P/E for other sectors.")
     public String getSectorPeerComparison(
-            @ToolP("The sector to get P/E ratio for (e.g., Technology, Healthcare)") String sector,
-            @ToolP("The stock exchange (e.g., NASDAQ, NYSE)") String exchange) {
+            @P("The sector to get P/E ratio for (e.g., Technology, Healthcare)") String sector,
+            @P("The stock exchange (e.g., NASDAQ, NYSE)") String exchange) {
         logger.info("Fetching sector P/E comparison for sector {} on exchange {}", sector, exchange);
         Map<String, Object> sectorPEData = fmpService.getSectorPERatios(exchange);
 
@@ -200,8 +200,8 @@ public class FinancialAnalysisTool {
 
     @Tool("Gets the average P/E ratio for a specific industry on a given stock exchange.")
     public String getIndustryPeerComparison(
-            @ToolP("The industry to get P/E ratio for (e.g., Software, Pharmaceuticals)") String industry,
-            @ToolP("The stock exchange (e.g., NASDAQ, NYSE)") String exchange) {
+            @P("The industry to get P/E ratio for (e.g., Software, Pharmaceuticals)") String industry,
+            @P("The stock exchange (e.g., NASDAQ, NYSE)") String exchange) {
         logger.info("Fetching industry P/E comparison for industry {} on exchange {}", industry, exchange);
         Map<String, Object> industryPEData = fmpService.getIndustryPERatios(exchange);
 

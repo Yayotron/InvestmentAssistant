@@ -19,8 +19,6 @@ import java.util.stream.Collectors;
 public class OllamaRAG {
 
     private final Assistant assistant;
-    private final FinancialAnalysisTool financialAnalysisTool;
-    private final CompanyHealthTool companyHealthTool; // New field
 
     public OllamaRAG(OllamaChatModel ollamaChatModel,
                      List<SystemPromptEnricher> systemPrompts,
@@ -28,10 +26,8 @@ public class OllamaRAG {
                      StockPriceTool stockPriceTool,
                      FinancialAnalysisTool financialAnalysisTool,
                      CompanyHealthTool companyHealthTool) { // New tool parameter
-        this.financialAnalysisTool = financialAnalysisTool;
-        this.companyHealthTool = companyHealthTool; // Assign new tool
         this.assistant = AiServices.builder(Assistant.class)
-                .chatLanguageModel(ollamaChatModel)
+                .chatModel(ollamaChatModel)
                 .chatMemory(MessageWindowChatMemory.withMaxMessages(500))
                 .tools(Arrays.asList(stockPriceTool, financialAnalysisTool, companyHealthTool)) // Include all three tools
                 .moderationModel(new DisabledModerationModel())
@@ -39,7 +35,7 @@ public class OllamaRAG {
                 .systemMessageProvider(o -> systemPrompts.stream()
                         .map(promptEnricher -> promptEnricher.enrichPrompt(o.toString()))
                         .collect(Collectors.joining("\n")))
-                // .tools() can be called multiple times or with multiple arguments
+                .tools(List.of(stockPriceTool, financialAnalysisTool, companyHealthTool))
                 .build();
     }
 
