@@ -12,7 +12,12 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Arrays;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -66,9 +71,9 @@ public class FinancialsService {
             }
 
             Map<String, Object> rawResponseMap = objectMapper.readValue(response, new TypeReference<Map<String, Object>>() {});
-            Optional<Map<String, Object>> apiError = apiErrorHandler.handleAlphaVantageError(rawResponseMap, "FinancialsService.getCompanyOverview", symbol, logger);
+            Optional<Map<String, String>> apiError = apiErrorHandler.handleAlphaVantageError(rawResponseMap, "FinancialsService.getCompanyOverview", symbol, logger);
             if (apiError.isPresent()) {
-                return apiError.get();
+                return (Map)apiError.get();
             }
             
             // Re-cast to the expected type if no error, assuming it's Map<String, String> for overview
@@ -119,9 +124,8 @@ public class FinancialsService {
                 return new HashMap<>(apiErrorHandler.createSingletonErrorResponse("No data received from API for earnings data", logger));
             }
 
-            Map<String, Object> rawEarningsData = objectMapper.readValue(response, new TypeReference<>() {
-            });
-            Optional<Map<String, Object>> apiError = apiErrorHandler.handleAlphaVantageError(rawEarningsData, "FinancialsService.getEarningsData", symbol, logger);
+            Map<String, Object> rawEarningsData = objectMapper.readValue(response, new TypeReference<Map<String, Object>>() {});
+            Optional<Map<String, String>> apiError = apiErrorHandler.handleAlphaVantageError(rawEarningsData, "FinancialsService.getEarningsData", symbol, logger);
             if (apiError.isPresent()) {
                 return new HashMap<>(apiError.get());
             }

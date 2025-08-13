@@ -8,7 +8,7 @@ import java.util.Optional;
 
 public class ApiErrorHandler {
 
-    public Optional<Map<String, Object>> handleAlphaVantageError(Map<String, Object> responseMap, String serviceName, String symbol, Logger logger) {
+    public Optional<Map<String, String>> handleAlphaVantageError(Map<String, Object> responseMap, String serviceName, String symbol, Logger logger) {
         if (responseMap == null) {
             return Optional.empty(); // Or handle as an error itself if a null map is unexpected
         }

@@ -7,7 +7,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 @Service
 public class CompanyHealthScorecardService {
@@ -45,10 +49,10 @@ public class CompanyHealthScorecardService {
     public ScorecardResult calculateHealthScore(String symbol) {
         logger.info("Calculating health scorecard for symbol: {}", symbol);
 
-        Map<String, Object> overviewData = financialsService.getCompanyOverview(symbol);
+        Map<String, String> overviewData = financialsService.getCompanyOverview(symbol);
         if (overviewData.containsKey("error")) {
-            String errorMsg = overviewData.get("error").toString();
-            String errorDetails = overviewData.get("details").toString();
+            String errorMsg = overviewData.get("error");
+            String errorDetails = overviewData.get("details");
             String combinedError = "Error fetching company overview: " + errorMsg + (errorDetails != null ? " (Details: " + errorDetails + ")" : "");
             logger.error("Cannot calculate health score for {}: {}", symbol, combinedError);
             return new ScorecardResult(0, Collections.emptyList(), Collections.emptyList(), combinedError);
@@ -58,7 +62,7 @@ public class CompanyHealthScorecardService {
         double totalScore = 0.0;
 
         // --- Profitability Metrics (40%) ---
-        Double profitMargin = parseDoubleMetric(overviewData.get("ProfitMargin").toString(), "Profit Margin", symbol);
+        Double profitMargin = parseDoubleMetric(overviewData.get("ProfitMargin"), "Profit Margin", symbol);
         if (profitMargin != null) {
             double score = 0;
             String assessment;
@@ -73,7 +77,7 @@ public class CompanyHealthScorecardService {
         }
 
 
-        Double returnOnEquity = parseDoubleMetric(overviewData.get("ReturnOnEquityTTM").toString(), "Return on Equity (TTM)", symbol);
+        Double returnOnEquity = parseDoubleMetric(overviewData.get("ReturnOnEquityTTM"), "Return on Equity (TTM)", symbol);
         if (returnOnEquity != null) {
             double score = 0;
             String assessment;
@@ -88,7 +92,7 @@ public class CompanyHealthScorecardService {
         }
 
         // --- Liquidity & Debt Metrics (30%) ---
-        Double currentRatio = parseDoubleMetric(overviewData.get("CurrentRatio").toString(), "Current Ratio", symbol);
+        Double currentRatio = parseDoubleMetric(overviewData.get("CurrentRatio"), "Current Ratio", symbol);
         if (currentRatio != null) {
             double score = 0;
             String assessment;
@@ -101,7 +105,7 @@ public class CompanyHealthScorecardService {
             metricScores.add(new MetricScore("Current Ratio", 0, "N/A", "N/A"));
         }
 
-        Double debtToEquity = parseDoubleMetric(overviewData.get("DebtToEquity").toString(), "Debt to Equity", symbol);
+        Double debtToEquity = parseDoubleMetric(overviewData.get("DebtToEquity"), "Debt to Equity", symbol);
         if (debtToEquity != null) {
             double score = 0;
             String assessment;
@@ -116,7 +120,7 @@ public class CompanyHealthScorecardService {
 
         // --- Growth Metrics (30%) ---
         // Values from Alpha Vantage for growth are usually direct percentages, e.g., "0.15" for 15%
-        Double quarterlyRevenueGrowth = parseDoubleMetric(overviewData.get("QuarterlyRevenueGrowthYOY").toString(), "Quarterly Revenue Growth (YOY)", symbol);
+        Double quarterlyRevenueGrowth = parseDoubleMetric(overviewData.get("QuarterlyRevenueGrowthYOY"), "Quarterly Revenue Growth (YOY)", symbol);
         if (quarterlyRevenueGrowth != null) {
             double score = 0;
             String assessment;
@@ -129,7 +133,7 @@ public class CompanyHealthScorecardService {
             metricScores.add(new MetricScore("Quarterly Revenue Growth (YOY)", 0, "N/A", "N/A"));
         }
 
-        Double quarterlyEarningsGrowth = parseDoubleMetric(overviewData.get("QuarterlyEarningsGrowthYOY").toString(), "Quarterly Earnings Growth (YOY)", symbol);
+        Double quarterlyEarningsGrowth = parseDoubleMetric(overviewData.get("QuarterlyEarningsGrowthYOY"), "Quarterly Earnings Growth (YOY)", symbol);
         if (quarterlyEarningsGrowth != null) {
             double score = 0;
             String assessment;
