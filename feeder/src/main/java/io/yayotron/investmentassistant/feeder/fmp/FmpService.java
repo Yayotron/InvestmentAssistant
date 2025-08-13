@@ -75,31 +75,25 @@ public class FmpService {
 
             Map<String, Object> result = rawData.stream()
                     .filter(item -> item.containsKey("sector") && item.containsKey("pe") && item.get("pe") != null)
-                    .collect(Collectors.toMap(
-                            item -> (String) item.get("sector"),
-                            item -> {
-                                Object peValue = item.get("pe");
-                                if (peValue instanceof Number) {
-                                    return ((Number) peValue).doubleValue();
-                                }
-                                try {
-                                    return Double.parseDouble(String.valueOf(peValue));
-                                } catch (NumberFormatException e) {
-                                    logger.warn("Could not parse P/E value '{}' for sector '{}'", peValue, item.get("sector"));
-                                    return null; 
-                                }
-                            },
-                            (v1, v2) -> v1 // In case of duplicate sectors, take the first one.
-                    ));
+                    .map(item -> {
+                        try {
+                            return Map.entry((String) item.get("sector"), Double.parseDouble(String.valueOf(item.get("pe"))));
+                        } catch (NumberFormatException e) {
+                            logger.warn("Could not parse P/E value '{}' for sector '{}'", item.get("pe"), item.get("sector"));
+                            return null;
+                        }
+                    })
+                    .filter(java.util.Objects::nonNull)
+                    .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (v1, v2) -> v1));
             logger.info("Successfully fetched FMP sector P/E ratios for exchange: {}, date: {}", exchange, currentDate);
             return result;
 
         } catch (HttpClientErrorException e) {
-            return Collections.singletonMap("error", apiErrorHandler.createErrorResponse(String.format("FMP API client error for sector P/E (exchange: %s)", exchange), e.getResponseBodyAsString(), logger));
+            return apiErrorHandler.createErrorResponse(String.format("FMP API client error for sector P/E (exchange: %s)", exchange), e.getResponseBodyAsString(), logger);
         } catch (IOException e) {
-            return Collections.singletonMap("error", apiErrorHandler.createErrorResponse(String.format("Failed to parse FMP sector P/E response (exchange: %s)", exchange), logger, e));
+            return apiErrorHandler.createErrorResponse(String.format("Failed to parse FMP sector P/E response (exchange: %s)", exchange), logger, e);
         } catch (Exception e) {
-            return Collections.singletonMap("error", apiErrorHandler.createErrorResponse(String.format("Failed to fetch FMP sector P/E data (exchange: %s)", exchange), logger, e));
+            return apiErrorHandler.createErrorResponse(String.format("Failed to fetch FMP sector P/E data (exchange: %s)", exchange), logger, e);
         }
     }
 
@@ -107,7 +101,7 @@ public class FmpService {
     public Map<String, Object> getIndustryPERatios(String exchange) {
         if (isApiKeyInvalid()) {
             logger.warn("FMP API key is not configured.");
-            return Collections.singletonMap("error", apiErrorHandler.createSingletonErrorResponse("FMP API key not configured", logger));
+            return apiErrorHandler.createSingletonErrorResponse("FMP API key not configured", logger);
         }
 
         String currentDate = LocalDate.now().format(DateTimeFormatter.ISO_DATE);
@@ -119,43 +113,41 @@ public class FmpService {
         try {
             String response = restTemplate.getForObject(builder.toUriString(), String.class);
             if (response == null || response.isEmpty()) {
-                return Collections.singletonMap("error", "No data received from FMP API for industry P/E ratios");
+                logger.warn("No response received from FMP for industry P/E, exchange: {}", exchange);
+                return apiErrorHandler.createSingletonErrorResponse("No data received from FMP API for industry P/E ratios", logger);
             }
 
             List<Map<String, Object>> rawData = objectMapper.readValue(response, new TypeReference<List<Map<String, Object>>>() {});
-             if (rawData.isEmpty()) {
-                return Collections.singletonMap("error", "Empty data array received for industry P/E ratios for exchange: " + exchange + " on date: " + currentDate);
+            if (rawData.isEmpty()) {
+                logger.warn("Empty data array received for FMP industry P/E ratios for exchange: {}", exchange);
+                return apiErrorHandler.createErrorResponse("Empty data array for industry P/E ratios", "Exchange: " + exchange, logger);
             }
 
             if (rawData.size() == 1 && rawData.get(0).containsKey("Error Message")) {
-                 return Collections.singletonMap("error", "FMP API Error: " + rawData.get(0).get("Error Message"));
+                String apiErrorMessage = (String) rawData.get(0).get("Error Message");
+                logger.warn("FMP API Error for industry P/E (exchange: {}): {}", exchange, apiErrorMessage);
+                return apiErrorHandler.createErrorResponse("FMP API Error", apiErrorMessage, logger);
             }
 
             return rawData.stream()
                     .filter(item -> item.containsKey("industry") && item.containsKey("pe") && item.get("pe") != null)
-                    .collect(Collectors.toMap(
-                            item -> (String) item.get("industry"),
-                             item -> {
-                                Object peValue = item.get("pe");
-                                if (peValue instanceof Number) {
-                                    return ((Number) peValue).doubleValue();
-                                }
-                                try {
-                                    return Double.parseDouble(String.valueOf(peValue));
-                                } catch (NumberFormatException e) {
-                                    return null; 
-                                }
-                            }
-                    ));
+                    .map(item -> {
+                        try {
+                            return Map.entry((String) item.get("industry"), Double.parseDouble(String.valueOf(item.get("pe"))));
+                        } catch (NumberFormatException e) {
+                            logger.warn("Could not parse P/E value '{}' for industry '{}'", item.get("pe"), item.get("industry"));
+                            return null;
+                        }
+                    })
+                    .filter(java.util.Objects::nonNull)
+                    .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (v1, v2) -> v1));
+
         } catch (HttpClientErrorException e) {
-            System.err.println("FMP API error for industry P/E (" + exchange + "): " + e.getResponseBodyAsString());
-            return Collections.singletonMap("error", "FMP API client error: " + e.getStatusCode() + " - " + e.getResponseBodyAsString());
+            return apiErrorHandler.createErrorResponse(String.format("FMP API client error for industry P/E (exchange: %s)", exchange), e.getResponseBodyAsString(), logger);
         } catch (IOException e) {
-            System.err.println("Error parsing JSON response for FMP industry P/E (" + exchange + "): " + e.getMessage());
-            return Collections.singletonMap("error", "Failed to parse FMP industry P/E response");
+            return apiErrorHandler.createErrorResponse(String.format("Failed to parse FMP industry P/E response (exchange: %s)", exchange), logger, e);
         } catch (Exception e) {
-            System.err.println("Error fetching FMP industry P/E for " + exchange + ": " + e.getMessage());
-            return Collections.singletonMap("error", "Failed to fetch FMP industry P/E data");
+            return apiErrorHandler.createErrorResponse(String.format("Failed to fetch FMP industry P/E data (exchange: %s)", exchange), logger, e);
         }
     }
 

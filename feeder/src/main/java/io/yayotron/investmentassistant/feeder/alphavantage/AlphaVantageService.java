@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -19,33 +20,35 @@ import java.util.Optional;
 public class AlphaVantageService {
 
     private static final Logger logger = LoggerFactory.getLogger(AlphaVantageService.class);
-    private static final String ALPHA_VANTAGE_URL = "https://www.alphavantage.co/query";
 
     private final String apiKey;
+    private final String alphaVantageUrl;
     private final RestTemplate restTemplate;
     private final ObjectMapper objectMapper;
     private final ApiErrorHandler apiErrorHandler;
 
-    public AlphaVantageService(@org.springframework.beans.factory.annotation.Value("${alphavantage.api.key}") String apiKey) {
+    public AlphaVantageService(@Value("${alphavantage.api.key}") String apiKey,
+                               @Value("${alphaVantage.url}") String alphaVantageUrl) {
         this.apiKey = apiKey;
+        this.alphaVantageUrl = alphaVantageUrl;
         this.restTemplate = new RestTemplate();
         this.objectMapper = new ObjectMapper();
         this.apiErrorHandler = new ApiErrorHandler(); // Instantiate directly
     }
-    
+
     private boolean isApiKeyInvalid() {
         return apiKey == null || apiKey.isEmpty() || "YOUR_API_KEY".equals(apiKey);
     }
 
     @Cacheable(value = "stockData", key = "#symbol")
-    public Map<String, String> getStockData(String symbol) {
+    public Map<String, Object> getStockData(String symbol) {
         if (isApiKeyInvalid()) {
             logger.warn("AlphaVantage API key is not configured.");
             return apiErrorHandler.createSingletonErrorResponse("API key not configured", logger);
         }
-        
+
         logger.info("Fetching stock data for symbol: {}", symbol);
-        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(ALPHA_VANTAGE_URL)
+        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(alphaVantageUrl)
                 .queryParam("function", "GLOBAL_QUOTE")
                 .queryParam("symbol", symbol)
                 .queryParam("apikey", apiKey);
@@ -61,7 +64,7 @@ public class AlphaVantageService {
 
             Optional<Map<String, String>> apiError = apiErrorHandler.handleAlphaVantageError(fullResponse, "AlphaVantageService.getStockData", symbol, logger);
             if (apiError.isPresent()) {
-                return apiError.get();
+                return (Map)apiError.get();
             }
 
             if (fullResponse.containsKey("Global Quote")) {

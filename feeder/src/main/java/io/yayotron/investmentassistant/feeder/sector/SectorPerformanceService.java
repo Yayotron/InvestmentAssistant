@@ -23,28 +23,29 @@ public class SectorPerformanceService {
     private static final Logger logger = LoggerFactory.getLogger(SectorPerformanceService.class);
     private static final String ALPHA_VANTAGE_URL = "https://www.alphavantage.co/query";
     private final String apiKey;
+    private final String alphaVantageUrl;
     private final RestTemplate restTemplate;
     private final ObjectMapper objectMapper;
     private final ApiErrorHandler apiErrorHandler;
 
-    public SectorPerformanceService(@Value("${alphavantage.api.key}") String apiKey) {
+    public SectorPerformanceService(@Value("${alphavantage.api.key}") String apiKey,
+                                    @Value("${alphaVantage.url}") String alphaVantageUrl) {
         this.apiKey = apiKey;
+        this.alphaVantageUrl = alphaVantageUrl;
         this.restTemplate = new RestTemplate();
         this.objectMapper = new ObjectMapper();
         this.apiErrorHandler = new ApiErrorHandler(); // Instantiate directly
     }
 
     @Cacheable(value = "sectorPerformance")
-    public Map<String, Map<String, String>> getSectorPerformance() {
+    public Map<String, Object> getSectorPerformance() {
         if (isApiKeyInvalid()) {
             logger.warn("AlphaVantage API key is not configured for SectorPerformanceService.");
-            // The return type is Map<String, Map<String, String>>, error needs to conform or be handled by caller.
-            // For now, returning a map that signals an error at the top level.
-            return Collections.singletonMap("error", apiErrorHandler.createSingletonErrorResponse("API key not configured", logger));
+            return apiErrorHandler.createSingletonErrorResponse("API key not configured", logger);
         }
 
         logger.info("Fetching sector performance data.");
-        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(ALPHA_VANTAGE_URL)
+        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(alphaVantageUrl)
                 .queryParam("function", "SECTOR")
                 .queryParam("apikey", apiKey);
 
@@ -52,16 +53,16 @@ public class SectorPerformanceService {
             String response = restTemplate.getForObject(builder.toUriString(), String.class);
             if (response == null || response.isEmpty()) {
                 logger.warn("No response received from AlphaVantage for sector performance.");
-                return Collections.singletonMap("error", apiErrorHandler.createSingletonErrorResponse("No data received from API for sector performance", logger));
+                return apiErrorHandler.createSingletonErrorResponse("No data received from API for sector performance", logger);
             }
 
             Map<String, Object> rawData = objectMapper.readValue(response, new TypeReference<Map<String, Object>>() {});
             Optional<Map<String, String>> apiError = apiErrorHandler.handleAlphaVantageError(rawData, "SectorPerformanceService.getSectorPerformance", "N/A_SECTOR_ENDPOINT", logger);
             if (apiError.isPresent()) {
-                return Collections.singletonMap("error", apiError.get());
+                return (Map)apiError.get();
             }
             
-            Map<String, Map<String, String>> result = new LinkedHashMap<>(); // Preserve order of ranks
+            Map<String, Object> result = new LinkedHashMap<>(); // Preserve order of ranks
             boolean dataFound = false;
             for (Map.Entry<String, Object> entry : rawData.entrySet()) {
                 String key = entry.getKey();
@@ -80,16 +81,16 @@ public class SectorPerformanceService {
             
             if (!dataFound) {
                  logger.warn("No 'Rank X' data found in sector performance response. Response: {}", response.substring(0, Math.min(response.length(), 1000)));
-                 return Collections.singletonMap("error", apiErrorHandler.createErrorResponse("Unexpected response format or no sector performance data found.", "Response: " + response.substring(0, Math.min(response.length(), 1000)), logger));
+                 return apiErrorHandler.createErrorResponse("Unexpected response format or no sector performance data found.", "Response: " + response.substring(0, Math.min(response.length(), 1000)), logger);
             }
             
             logger.info("Successfully fetched sector performance data.");
             return result;
 
         } catch (IOException e) {
-            return Collections.singletonMap("error", apiErrorHandler.createErrorResponse("Failed to parse sector performance response", logger, e));
+            return apiErrorHandler.createErrorResponse("Failed to parse sector performance response", logger, e);
         } catch (Exception e) {
-            return Collections.singletonMap("error", apiErrorHandler.createErrorResponse("Failed to fetch sector performance data", logger, e));
+            return apiErrorHandler.createErrorResponse("Failed to fetch sector performance data", logger, e);
         }
     }
 

@@ -31,18 +31,18 @@ public class ApiErrorHandler {
         return Optional.empty();
     }
 
-    public Map<String, String> createErrorResponse(String message, Logger logger, Exception e) {
+    public Map<String, Object> createErrorResponse(String message, Logger logger, Exception e) {
         String detailedMessage = (e != null) ? e.getMessage() : "N/A";
         logger.error(message + (e != null ? ": " + detailedMessage : ""), e); // Log with exception stack trace
         return Map.of("error", message, "details", detailedMessage);
     }
     
-    public Map<String, String> createErrorResponse(String message, String details, Logger logger) {
+    public Map<String, Object> createErrorResponse(String message, String details, Logger logger) {
         logger.error(message + ": " + details);
         return Map.of("error", message, "details", details);
     }
 
-    public Map<String, String> createSingletonErrorResponse(String message, Logger logger) {
+    public Map<String, Object> createSingletonErrorResponse(String message, Logger logger) {
         logger.error(message);
         return Collections.singletonMap("error", message);
     }

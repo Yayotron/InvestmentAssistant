@@ -36,7 +36,7 @@ class AlphaVantageServiceTest {
 
     @BeforeEach
     void setUp() {
-        alphaVantageService = new AlphaVantageService(DUMMY_API_KEY);
+        alphaVantageService = new AlphaVantageService(DUMMY_API_KEY, "https://www.alphavantage.co/query");
         ReflectionTestUtils.setField(alphaVantageService, "restTemplate", restTemplate);
         ReflectionTestUtils.setField(alphaVantageService, "objectMapper", objectMapper);
     }
@@ -51,8 +51,8 @@ class AlphaVantageServiceTest {
         when(restTemplate.getForObject(anyString(), eq(String.class))).thenReturn(mockJsonResponse);
 
         // when
-        Map<String, String> stockData1 = alphaVantageService.getStockData(symbol);
-        Map<String, String> stockData2 = alphaVantageService.getStockData(symbol);
+        Map<String, Object> stockData1 = alphaVantageService.getStockData(symbol);
+        Map<String, Object> stockData2 = alphaVantageService.getStockData(symbol);
 
         // then
         assertEquals("IBM", stockData1.get("symbol"), "First call should fetch data.");
@@ -71,7 +71,7 @@ class AlphaVantageServiceTest {
         when(restTemplate.getForObject(contains("symbol=" + symbol), eq(String.class))).thenReturn(mockJsonResponse);
 
         // when
-        Map<String, String> stockData = alphaVantageService.getStockData(symbol);
+        Map<String, Object> stockData = alphaVantageService.getStockData(symbol);
 
         // then
         assertEquals("IBM", stockData.get("symbol"));
@@ -97,12 +97,12 @@ class AlphaVantageServiceTest {
         when(restTemplate.getForObject(anyString(), eq(String.class))).thenReturn(mockErrorResponse);
 
         // when
-        Map<String, String> stockData = alphaVantageService.getStockData(symbol);
+        Map<String, Object> stockData = alphaVantageService.getStockData(symbol);
 
         // then
         assertNotNull(stockData);
         assertTrue(stockData.containsKey("error"));
-        assertTrue(stockData.get("error").contains("Invalid API call"));
+        assertTrue(stockData.get("error").toString().contains("Invalid API call"));
 
         verify(restTemplate, times(1)).getForObject(anyString(), eq(String.class));
     }
@@ -121,12 +121,12 @@ class AlphaVantageServiceTest {
         when(restTemplate.getForObject(anyString(), eq(String.class))).thenReturn(mockInfoResponse);
 
         // when
-        Map<String, String> stockData = alphaVantageService.getStockData(symbol);
+        Map<String, Object> stockData = alphaVantageService.getStockData(symbol);
 
         // then
         assertNotNull(stockData);
         assertTrue(stockData.containsKey("error"));
-        assertTrue(stockData.get("error").contains("Thank you for using Alpha Vantage"));
+        assertTrue(stockData.get("error").toString().contains("Thank you for using Alpha Vantage"));
 
         verify(restTemplate, times(1)).getForObject(anyString(), eq(String.class));
     }
@@ -139,12 +139,12 @@ class AlphaVantageServiceTest {
         when(restTemplate.getForObject(anyString(), eq(String.class))).thenThrow(new RuntimeException("Network error"));
 
         // when
-        Map<String, String> stockData = alphaVantageService.getStockData(symbol);
+        Map<String, Object> stockData = alphaVantageService.getStockData(symbol);
 
         // then
         assertNotNull(stockData);
         assertTrue(stockData.containsKey("error"));
-        assertTrue(stockData.get("error").contains("Failed to fetch stock data"));
+        assertTrue(stockData.get("error").toString().contains("Failed to fetch stock data"));
 
         verify(restTemplate, times(1)).getForObject(anyString(), eq(String.class));
     }
@@ -159,12 +159,12 @@ class AlphaVantageServiceTest {
         when(restTemplate.getForObject(anyString(), eq(String.class))).thenReturn(mockBadJsonResponse);
 
         // when
-        Map<String, String> stockData = alphaVantageService.getStockData(symbol);
+        Map<String, Object> stockData = alphaVantageService.getStockData(symbol);
 
         // then
         assertNotNull(stockData);
         assertTrue(stockData.containsKey("error"));
-        assertTrue(stockData.get("error").contains("Failed to parse stock data response"));
+        assertTrue(stockData.get("error").toString().contains("Failed to parse stock data response"));
 
         verify(restTemplate, times(1)).getForObject(anyString(), eq(String.class));
     }
@@ -177,7 +177,7 @@ class AlphaVantageServiceTest {
         when(restTemplate.getForObject(anyString(), eq(String.class))).thenReturn(null);
 
         // when
-        Map<String, String> stockData = alphaVantageService.getStockData(symbol);
+        Map<String, Object> stockData = alphaVantageService.getStockData(symbol);
 
         // then
         assertNotNull(stockData);
@@ -195,7 +195,7 @@ class AlphaVantageServiceTest {
         when(restTemplate.getForObject(anyString(), eq(String.class))).thenReturn("");
 
         // when
-        Map<String, String> stockData = alphaVantageService.getStockData(symbol);
+        Map<String, Object> stockData = alphaVantageService.getStockData(symbol);
 
         // then
         assertNotNull(stockData);
@@ -213,7 +213,7 @@ class AlphaVantageServiceTest {
         String symbol = "ANY_SYM";
 
         // when
-        Map<String, String> stockData = alphaVantageService.getStockData(symbol);
+        Map<String, Object> stockData = alphaVantageService.getStockData(symbol);
 
         // then
         assertNotNull(stockData);

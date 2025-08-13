@@ -40,7 +40,7 @@ public class FmpServiceTest {
 
     @BeforeEach
     void setUp() {
-        fmpService = new FmpService(DUMMY_API_KEY);
+        fmpService = new FmpService(DUMMY_API_KEY, "https://financialmodelingprep.com/api/v4");
         ReflectionTestUtils.setField(fmpService, "restTemplate", restTemplate);
         ReflectionTestUtils.setField(fmpService, "objectMapper", objectMapper);
     }
@@ -78,7 +78,7 @@ public class FmpServiceTest {
         """;
         when(restTemplate.getForObject(contains("/sector_price_earning_ratio"), eq(String.class))).thenReturn(mockJsonResponse);
         Map<String, Object> sectorPEs = fmpService.getSectorPERatios(TEST_EXCHANGE);
-        assertNull(sectorPEs.get("Technology")); // Should be null due to parsing error for "High"
+        assertFalse(sectorPEs.containsKey("Technology")); // Should be excluded due to parsing error
         assertEquals(25.2, (Double) sectorPEs.get("Healthcare"));
     }
 
@@ -91,9 +91,8 @@ public class FmpServiceTest {
         Map<String, Object> sectorPEs = fmpService.getSectorPERatios(TEST_EXCHANGE);
 
         assertTrue(sectorPEs.containsKey("error"));
-        Map<String, String> errorDetails = (Map<String, String>) sectorPEs.get("error");
-        assertEquals("FMP API Error", errorDetails.get("error"));
-        assertEquals("Limit reached for API key.", errorDetails.get("details"));
+        assertEquals("FMP API Error", sectorPEs.get("error"));
+        assertEquals("Limit reached for API key.", sectorPEs.get("details"));
     }
 
     @Test
@@ -106,9 +105,8 @@ public class FmpServiceTest {
         Map<String, Object> sectorPEs = fmpService.getSectorPERatios(TEST_EXCHANGE);
 
         assertTrue(sectorPEs.containsKey("error"));
-        Map<String, String> errorDetails = (Map<String, String>) sectorPEs.get("error");
-        assertTrue(errorDetails.get("error").contains("FMP API client error for sector P/E"));
-        assertTrue(errorDetails.get("details").contains("Invalid API Key"));
+        assertTrue(sectorPEs.get("error").toString().contains("FMP API client error for sector P/E"));
+        assertTrue(sectorPEs.get("details").toString().contains("Invalid API Key"));
     }
     
     @Test
@@ -116,8 +114,7 @@ public class FmpServiceTest {
         when(restTemplate.getForObject(anyString(), eq(String.class))).thenReturn("[]");
         Map<String, Object> data = fmpService.getSectorPERatios(TEST_EXCHANGE);
         assertTrue(data.containsKey("error"));
-        Map<String, String> errorDetails = (Map<String, String>) data.get("error");
-        assertEquals("Empty data array for sector P/E ratios", errorDetails.get("error"));
+        assertEquals("Empty data array for sector P/E ratios", data.get("error"));
     }
 
     @Test
@@ -125,21 +122,19 @@ public class FmpServiceTest {
         when(restTemplate.getForObject(anyString(), eq(String.class))).thenReturn(null);
         Map<String, Object> data = fmpService.getSectorPERatios(TEST_EXCHANGE);
         assertTrue(data.containsKey("error"));
-        Map<String, String> errorDetails = (Map<String, String>) data.get("error");
-        assertEquals("No data received from FMP API for sector P/E ratios", errorDetails.get("error"));
+        assertEquals("No data received from FMP API for sector P/E ratios", data.get("error"));
     }
 
 
     @Test
     void getSectorPERatios_apiKeyNotConfigured() {
-        fmpService = new FmpService(INVALID_API_KEY_PLACEHOLDER);
+        fmpService = new FmpService(INVALID_API_KEY_PLACEHOLDER, "https://financialmodelingprep.com/api/v4");
         ReflectionTestUtils.setField(fmpService, "restTemplate", restTemplate);
         ReflectionTestUtils.setField(fmpService, "objectMapper", objectMapper);
 
         Map<String, Object> sectorPEs = fmpService.getSectorPERatios(TEST_EXCHANGE);
         assertTrue(sectorPEs.containsKey("error"));
-        Map<String, String> errorDetails = (Map<String, String>) sectorPEs.get("error");
-        assertEquals("FMP API key not configured", errorDetails.get("error"));
+        assertEquals("FMP API key not configured", sectorPEs.get("error"));
         verifyNoInteractions(restTemplate);
     }
 
@@ -172,9 +167,8 @@ public class FmpServiceTest {
         Map<String, Object> industryPEs = fmpService.getIndustryPERatios(TEST_EXCHANGE);
 
         assertTrue(industryPEs.containsKey("error"));
-        Map<String, String> errorDetails = (Map<String, String>) industryPEs.get("error");
-        assertEquals("FMP API Error", errorDetails.get("error"));
-        assertEquals("Invalid exchange for industry P/E.", errorDetails.get("details"));
+        assertEquals("FMP API Error", industryPEs.get("error"));
+        assertEquals("Invalid exchange for industry P/E.", industryPEs.get("details"));
     }
     
     @Test
@@ -184,21 +178,19 @@ public class FmpServiceTest {
         Map<String, Object> data = fmpService.getIndustryPERatios(TEST_EXCHANGE);
 
         assertTrue(data.containsKey("error"));
-        Map<String, String> errorDetails = (Map<String, String>) data.get("error");
-        assertEquals("Failed to parse FMP industry P/E response (exchange: " + TEST_EXCHANGE + ")", errorDetails.get("error"));
-        assertTrue(errorDetails.get("details").toString().contains("Unexpected end-of-input"));
+        assertEquals("Failed to parse FMP industry P/E response (exchange: " + TEST_EXCHANGE + ")", data.get("error"));
+        assertTrue(data.get("details").toString().contains("Unexpected end-of-input"));
     }
 
     @Test
     void getIndustryPERatios_apiKeyNotConfigured() {
-        fmpService = new FmpService(INVALID_API_KEY_PLACEHOLDER);
+        fmpService = new FmpService(INVALID_API_KEY_PLACEHOLDER, "https://financialmodelingprep.com/api/v4");
          ReflectionTestUtils.setField(fmpService, "restTemplate", restTemplate);
         ReflectionTestUtils.setField(fmpService, "objectMapper", objectMapper);
 
         Map<String, Object> industryPEs = fmpService.getIndustryPERatios(TEST_EXCHANGE);
         assertTrue(industryPEs.containsKey("error"));
-        Map<String, String> errorDetails = (Map<String, String>) industryPEs.get("error");
-        assertEquals("FMP API key not configured", errorDetails.get("error"));
+        assertEquals("FMP API key not configured", industryPEs.get("error"));
         verifyNoInteractions(restTemplate);
     }
 }

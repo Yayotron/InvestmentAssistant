@@ -26,6 +26,7 @@ public class FinancialsService {
     private static final Logger logger = LoggerFactory.getLogger(FinancialsService.class);
     private static final String ALPHA_VANTAGE_URL = "https://www.alphavantage.co/query";
     private final String apiKey;
+    private final String alphaVantageUrl;
     private final RestTemplate restTemplate;
     private final ObjectMapper objectMapper;
     private final ApiErrorHandler apiErrorHandler;
@@ -40,22 +41,24 @@ public class FinancialsService {
         "ReturnOnAssetsTTM", "DebtToEquity", "CurrentRatio", "BookValue"
     );
 
-    public FinancialsService(@Value("${alphavantage.api.key}") String apiKey) {
+    public FinancialsService(@Value("${alphavantage.api.key}") String apiKey,
+                             @Value("${alphaVantage.url}") String alphaVantageUrl) {
         this.apiKey = apiKey;
+        this.alphaVantageUrl = alphaVantageUrl;
         this.restTemplate = new RestTemplate();
         this.objectMapper = new ObjectMapper();
         this.apiErrorHandler = new ApiErrorHandler(); // Instantiate directly
     }
 
     @Cacheable(value = "companyOverview", key = "#symbol")
-    public Map<String, String> getCompanyOverview(String symbol) {
+    public Map<String, Object> getCompanyOverview(String symbol) {
         if (isApiKeyInvalid()) {
             logger.warn("AlphaVantage API key is not configured for FinancialsService.");
-            return new HashMap<>(apiErrorHandler.createSingletonErrorResponse("API key not configured", logger));
+            return apiErrorHandler.createSingletonErrorResponse("API key not configured", logger);
         }
 
         logger.info("Fetching company overview for symbol: {}", symbol);
-        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(ALPHA_VANTAGE_URL)
+        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(alphaVantageUrl)
                 .queryParam("function", "OVERVIEW")
                 .queryParam("symbol", symbol)
                 .queryParam("apikey", apiKey);
@@ -64,13 +67,13 @@ public class FinancialsService {
             String response = restTemplate.getForObject(builder.toUriString(), String.class);
             if (response == null || response.isEmpty()) {
                 logger.warn("No response received from AlphaVantage for company overview, symbol {}", symbol);
-                return new HashMap<>(apiErrorHandler.createSingletonErrorResponse("No data received from API for company overview", logger));
+                return apiErrorHandler.createSingletonErrorResponse("No data received from API for company overview", logger);
             }
 
             Map<String, Object> rawResponseMap = objectMapper.readValue(response, new TypeReference<Map<String, Object>>() {});
             Optional<Map<String, String>> apiError = apiErrorHandler.handleAlphaVantageError(rawResponseMap, "FinancialsService.getCompanyOverview", symbol, logger);
             if (apiError.isPresent()) {
-                return apiError.get();
+                return (Map)apiError.get();
             }
             
             // Re-cast to the expected type if no error, assuming it's Map<String, String> for overview
@@ -81,7 +84,7 @@ public class FinancialsService {
                 return apiErrorHandler.createErrorResponse("No overview data found for symbol: " + symbol, "Symbol may be invalid or delisted.", logger);
             }
 
-            Map<String, String> result = new HashMap<>();
+            Map<String, Object> result = new HashMap<>();
             for (String metric : OVERVIEW_METRICS) {
                 String value = fullOverview.get(metric);
                 if (value != null && !value.equals("None") && !value.isEmpty()) {
@@ -95,9 +98,9 @@ public class FinancialsService {
             return result;
 
         } catch (IOException e) {
-            return new HashMap<>(apiErrorHandler.createErrorResponse("Failed to parse company overview response for symbol " + symbol, logger, e));
+            return apiErrorHandler.createErrorResponse("Failed to parse company overview response for symbol " + symbol, logger, e);
         } catch (Exception e) {
-            return new HashMap<>(apiErrorHandler.createErrorResponse("Failed to fetch company overview for symbol " + symbol, logger, e));
+            return apiErrorHandler.createErrorResponse("Failed to fetch company overview for symbol " + symbol, logger, e);
         }
     }
 

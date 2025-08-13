@@ -35,7 +35,7 @@ public class FinancialsServiceTest {
 
     @BeforeEach
     void setUp() {
-        financialsService = new FinancialsService(DUMMY_API_KEY);
+        financialsService = new FinancialsService(DUMMY_API_KEY, "https://www.alphavantage.co/query");
         ReflectionTestUtils.setField(financialsService, "restTemplate", restTemplate);
         ReflectionTestUtils.setField(financialsService, "objectMapper", objectMapper);
     }
@@ -77,7 +77,7 @@ public class FinancialsServiceTest {
         """;
         when(restTemplate.getForObject(contains("OVERVIEW") , eq(String.class))).thenReturn(mockJsonResponse);
 
-        Map<String, String> overview = financialsService.getCompanyOverview(symbol);
+        Map<String, Object> overview = financialsService.getCompanyOverview(symbol);
 
         assertNotNull(overview);
         assertEquals("AAPL", overview.get("Symbol"));
@@ -102,7 +102,7 @@ public class FinancialsServiceTest {
         // EPS is missing entirely
         when(restTemplate.getForObject(contains("OVERVIEW"), eq(String.class))).thenReturn(mockJsonResponse);
 
-        Map<String, String> overview = financialsService.getCompanyOverview(symbol);
+        Map<String, Object> overview = financialsService.getCompanyOverview(symbol);
 
         assertNotNull(overview);
         assertEquals("TEST", overview.get("Symbol"));
@@ -119,10 +119,10 @@ public class FinancialsServiceTest {
         String mockErrorResponse = "{ \"Error Message\": \"Invalid API call for overview.\" }";
         when(restTemplate.getForObject(anyString(), eq(String.class))).thenReturn(mockErrorResponse);
 
-        Map<String, String> overview = financialsService.getCompanyOverview(symbol);
+        Map<String, Object> overview = financialsService.getCompanyOverview(symbol);
 
         assertTrue(overview.containsKey("error"));
-        assertTrue(overview.get("error").contains("API Error in FinancialsService.getCompanyOverview for ERROR: Invalid API call for overview."));
+        assertTrue(overview.get("error").toString().contains("API Error in FinancialsService.getCompanyOverview for ERROR: Invalid API call for overview."));
     }
 
     @Test
@@ -131,17 +131,17 @@ public class FinancialsServiceTest {
         String mockInfoResponse = "{ \"Information\": \"API call frequency limit reached.\" }";
         when(restTemplate.getForObject(anyString(), eq(String.class))).thenReturn(mockInfoResponse);
 
-        Map<String, String> overview = financialsService.getCompanyOverview(symbol);
+        Map<String, Object> overview = financialsService.getCompanyOverview(symbol);
 
         assertTrue(overview.containsKey("error"));
-        assertTrue(overview.get("error").contains("API Error in FinancialsService.getCompanyOverview for INFO: API call frequency limit reached."));
+        assertTrue(overview.get("error").toString().contains("API Error in FinancialsService.getCompanyOverview for INFO: API call frequency limit reached."));
     }
     
     @Test
     void getCompanyOverview_emptyResponseFromApi() {
         String symbol = "EMPTY_RESP";
         when(restTemplate.getForObject(anyString(), eq(String.class))).thenReturn("");
-        Map<String, String> data = financialsService.getCompanyOverview(symbol);
+        Map<String, Object> data = financialsService.getCompanyOverview(symbol);
         assertTrue(data.containsKey("error"));
         assertEquals("No data received from API for company overview", data.get("error"));
     }
@@ -150,7 +150,7 @@ public class FinancialsServiceTest {
     void getCompanyOverview_nullResponseFromApi() {
         String symbol = "NULL_RESP";
         when(restTemplate.getForObject(anyString(), eq(String.class))).thenReturn(null);
-        Map<String, String> data = financialsService.getCompanyOverview(symbol);
+        Map<String, Object> data = financialsService.getCompanyOverview(symbol);
         assertTrue(data.containsKey("error"));
         assertEquals("No data received from API for company overview", data.get("error"));
     }
@@ -160,7 +160,7 @@ public class FinancialsServiceTest {
         String symbol = "EMPTY_DATA";
         String mockJsonResponse = "{}"; // Empty JSON object
         when(restTemplate.getForObject(anyString(), eq(String.class))).thenReturn(mockJsonResponse);
-        Map<String, String> data = financialsService.getCompanyOverview(symbol);
+        Map<String, Object> data = financialsService.getCompanyOverview(symbol);
         assertTrue(data.containsKey("error"));
         assertEquals("No overview data found for symbol: " + symbol, data.get("error"));
         assertEquals("Symbol may be invalid or delisted.", data.get("details"));
@@ -172,7 +172,7 @@ public class FinancialsServiceTest {
         String symbol = "SYMBOL_NULL";
         String mockJsonResponse = "{ \"Symbol\": null }"; // Symbol is null
         when(restTemplate.getForObject(anyString(), eq(String.class))).thenReturn(mockJsonResponse);
-        Map<String, String> data = financialsService.getCompanyOverview(symbol);
+        Map<String, Object> data = financialsService.getCompanyOverview(symbol);
         assertTrue(data.containsKey("error"));
         assertEquals("No overview data found for symbol: " + symbol, data.get("error"));
          assertEquals("Symbol may be invalid or delisted.", data.get("details"));
@@ -181,11 +181,11 @@ public class FinancialsServiceTest {
 
     @Test
     void getCompanyOverview_apiKeyNotConfigured() {
-        financialsService = new FinancialsService(INVALID_API_KEY_PLACEHOLDER);
+        financialsService = new FinancialsService(INVALID_API_KEY_PLACEHOLDER, "https://www.alphavantage.co/query");
         ReflectionTestUtils.setField(financialsService, "restTemplate", restTemplate);
         ReflectionTestUtils.setField(financialsService, "objectMapper", objectMapper);
         
-        Map<String, String> overview = financialsService.getCompanyOverview("ANY");
+        Map<String, Object> overview = financialsService.getCompanyOverview("ANY");
         assertTrue(overview.containsKey("error"));
         assertEquals("API key not configured", overview.get("error"));
         verifyNoInteractions(restTemplate);
@@ -301,7 +301,7 @@ public class FinancialsServiceTest {
 
     @Test
     void getEarningsData_apiKeyNotConfigured() {
-        financialsService = new FinancialsService(INVALID_API_KEY_PLACEHOLDER);
+        financialsService = new FinancialsService(INVALID_API_KEY_PLACEHOLDER, "https://www.alphavantage.co/query");
         ReflectionTestUtils.setField(financialsService, "restTemplate", restTemplate);
         ReflectionTestUtils.setField(financialsService, "objectMapper", objectMapper);
         

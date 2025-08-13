@@ -8,8 +8,13 @@ import org.mockserver.client.MockServerClient;
 import org.mockserver.integration.ClientAndServer;
 import static org.mockserver.integration.ClientAndServer.startClientAndServer;
 import org.springframework.beans.factory.annotation.Autowired;
+import io.yayotron.investmentassistant.test.TestEmbeddingConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
+import io.yayotron.investmentassistant.ingestor.DocumentIngestorRunner;
+
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -22,7 +27,11 @@ import static org.mockserver.model.HttpResponse.response;
 
 @SpringBootTest(properties = "alphaVantage.url=http://localhost:1080/query")
 @ActiveProfiles("test")
+@Import(TestEmbeddingConfiguration.class)
 class AlphaVantageServiceIntegrationTest {
+
+    @MockBean
+    private DocumentIngestorRunner documentIngestorRunner;
 
     @Autowired
     private AlphaVantageService alphaVantageService;
@@ -59,7 +68,7 @@ class AlphaVantageServiceIntegrationTest {
                 );
 
         // when
-        Map<String, String> stockData = alphaVantageService.getStockData(symbol);
+        Map<String, Object> stockData = alphaVantageService.getStockData(symbol);
 
         // then
         assertEquals("IBM", stockData.get("symbol"));
