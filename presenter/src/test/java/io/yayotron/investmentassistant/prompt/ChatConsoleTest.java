@@ -1,6 +1,6 @@
 package io.yayotron.investmentassistant.prompt;
 
-import io.yayotron.investmentassistant.model.OllamaRAG;
+import io.yayotron.investmentassistant.model.RAGConfiguration;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -17,13 +17,13 @@ import static org.mockito.Mockito.*;
 class ChatConsoleTest {
 
     @Mock
-    private OllamaRAG ollamaRAG;
+    private RAGConfiguration RAGConfiguration;
 
     private ChatConsole chatConsole;
 
     @BeforeEach
     void setUp() {
-        chatConsole = new ChatConsole(ollamaRAG);
+        chatConsole = new ChatConsole(RAGConfiguration);
     }
 
     @Test
@@ -32,10 +32,10 @@ class ChatConsoleTest {
         InputStream in = new ByteArrayInputStream(input.getBytes());
         System.setIn(in);
 
-        when(ollamaRAG.askOllama(anyString())).thenReturn("Response from Ollama");
+        when(RAGConfiguration.ask(anyString())).thenReturn("Response from Ollama");
 
         chatConsole.run(mock(ApplicationArguments.class));
 
-        verify(ollamaRAG).askOllama("Hello Ollama\nHello Ollama2\n");
+        verify(RAGConfiguration).ask("Hello Ollama\nHello Ollama2\n");
     }
 }

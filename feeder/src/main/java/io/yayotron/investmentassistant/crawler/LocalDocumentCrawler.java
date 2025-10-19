@@ -1,6 +1,5 @@
 package io.yayotron.investmentassistant.crawler;
 
-import com.google.common.collect.Streams;
 import dev.langchain4j.data.document.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,6 +9,7 @@ import org.springframework.util.ResourceUtils;
 import java.io.FileNotFoundException;
 import java.nio.file.PathMatcher;
 import java.util.List;
+import java.util.stream.Stream;
 
 import static dev.langchain4j.data.document.loader.FileSystemDocumentLoader.loadDocuments;
 
@@ -20,7 +20,7 @@ public class LocalDocumentCrawler {
 
     public List<Document> crawlDocuments() {
         try {
-            List<Document> allDocuments = Streams.concat(loadDocuments(
+            List<Document> allDocuments = Stream.concat(loadDocuments(
                                     ResourceUtils.getFile("classpath:data/").toPath(),
                                     pathMatcher(".csv")
                             ).stream(),
