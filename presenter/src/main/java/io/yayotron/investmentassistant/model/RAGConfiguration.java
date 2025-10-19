@@ -2,7 +2,7 @@ package io.yayotron.investmentassistant.model;
 
 import dev.langchain4j.memory.chat.MessageWindowChatMemory;
 import dev.langchain4j.model.moderation.DisabledModerationModel;
-import dev.langchain4j.model.ollama.OllamaChatModel;
+import dev.langchain4j.model.openai.OpenAiChatModel;
 import dev.langchain4j.rag.RetrievalAugmentor;
 import dev.langchain4j.service.AiServices;
 import io.yayotron.investmentassistant.prompt.SystemPromptEnricher;
@@ -12,15 +12,15 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
-public class OllamaRAG {
+public class RAGConfiguration {
 
     private final Assistant assistant;
 
-    public OllamaRAG(OllamaChatModel ollamaChatModel,
-                     List<SystemPromptEnricher> systemPrompts,
-                     RetrievalAugmentor retrievalAugmentor) {
+    public RAGConfiguration(OpenAiChatModel chatModel,
+                            List<SystemPromptEnricher> systemPrompts,
+                            RetrievalAugmentor retrievalAugmentor) {
         this.assistant = AiServices.builder(Assistant.class)
-                .chatLanguageModel(ollamaChatModel)
+                .chatModel(chatModel)
                 .chatMemory(MessageWindowChatMemory.withMaxMessages(500))
                 .moderationModel(new DisabledModerationModel())
                 .retrievalAugmentor(retrievalAugmentor)
@@ -30,7 +30,7 @@ public class OllamaRAG {
                 .build();
     }
 
-    public String askOllama(String question) {
+    public String ask(String question) {
         return assistant.answer(question);
     }
 }

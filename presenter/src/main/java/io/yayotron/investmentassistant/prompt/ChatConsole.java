@@ -1,6 +1,6 @@
 package io.yayotron.investmentassistant.prompt;
 
-import io.yayotron.investmentassistant.model.OllamaRAG;
+import io.yayotron.investmentassistant.model.RAGConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.ApplicationArguments;
@@ -15,10 +15,10 @@ public class ChatConsole implements ApplicationRunner {
     private static final Logger logger = LoggerFactory.getLogger(ChatConsole.class);
     public static final String END_OF_PROMPT_TOKEN = "<<EOP>>";
 
-    private final OllamaRAG ollamaRAG;
+    private final RAGConfiguration RAGConfiguration;
 
-    public ChatConsole(OllamaRAG ollamaRAG) {
-        this.ollamaRAG = ollamaRAG;
+    public ChatConsole(RAGConfiguration RAGConfiguration) {
+        this.RAGConfiguration = RAGConfiguration;
     }
 
     @Override
@@ -31,7 +31,7 @@ public class ChatConsole implements ApplicationRunner {
             query = readAllLines(scanner);
             logger.info("Asking Ollama: {}", query);
             try {
-                String response = ollamaRAG.askOllama(query);
+                String response = RAGConfiguration.ask(query);
                 logger.info("Answer from Ollama: {}", response);
             } catch (Exception e) {
                 logger.error("Error while asking Ollama: {}", e.getMessage());
