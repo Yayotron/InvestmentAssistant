@@ -3,12 +3,10 @@ package io.yayotron.investmentassistant.model;
 import dev.langchain4j.model.openai.OpenAiChatModel;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 
-@Configuration
 public class ChatGptModelConfiguration {
 
     private final String apiKey;

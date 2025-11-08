@@ -1,8 +1,8 @@
 package io.yayotron.investmentassistant.model;
 
 import dev.langchain4j.memory.chat.MessageWindowChatMemory;
+import dev.langchain4j.model.chat.ChatModel;
 import dev.langchain4j.model.moderation.DisabledModerationModel;
-import dev.langchain4j.model.openai.OpenAiChatModel;
 import dev.langchain4j.rag.RetrievalAugmentor;
 import dev.langchain4j.service.AiServices;
 import io.yayotron.investmentassistant.prompt.SystemPromptEnricher;
@@ -16,7 +16,7 @@ public class RAGConfiguration {
 
     private final Assistant assistant;
 
-    public RAGConfiguration(OpenAiChatModel chatModel,
+    public RAGConfiguration(ChatModel chatModel,
                             List<SystemPromptEnricher> systemPrompts,
                             RetrievalAugmentor retrievalAugmentor) {
         this.assistant = AiServices.builder(Assistant.class)
