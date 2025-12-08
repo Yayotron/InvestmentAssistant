@@ -1,5 +1,6 @@
 package io.yayotron.investmentassistant.model;
 
+import dev.langchain4j.model.chat.listener.ChatModelListener;
 import dev.langchain4j.model.ollama.OllamaChatModel;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -7,6 +8,7 @@ import org.springframework.context.annotation.Configuration;
 
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
+import java.util.List;
 import java.util.Map;
 
 @Configuration
@@ -26,7 +28,7 @@ public class OllamaChatModelConfiguration {
     }
 
     @Bean
-    public OllamaChatModel model() {
+    public OllamaChatModel model(List<ChatModelListener> listeners) {
         return OllamaChatModel.builder()
                 .customHeaders(Map.of("Authorization", "Bearer " + apiKey))
                 .baseUrl(ollamaHost)
@@ -34,6 +36,7 @@ public class OllamaChatModelConfiguration {
                 .timeout(Duration.of(5, ChronoUnit.MINUTES))
                 .logRequests(true)
                 .logResponses(true)
+                .listeners(listeners)
                 .build();
     }
 }
